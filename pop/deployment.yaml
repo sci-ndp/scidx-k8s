@@ -14,9 +14,13 @@ spec:
     spec:
       containers:
       - name: pop-api
-        image: yutianqin/pop-api:latest
+        image: yutianqin/pop-api:v3
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
+        env: 
+        - name: RUNNING_IN_INGRESS
+          value: "true"
         resources:
           limits:
             memory: "512Mi"
