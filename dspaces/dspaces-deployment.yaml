@@ -41,9 +41,6 @@ spec:
             - mountPath: /dspaces.toml
               name: dspaces-cm
               subPath: dspaces.toml
-            - mountPath: /yutian.txt
-              name: db-volume
-              subPath: yutian.txt
             - mountPath: /dspaces_reg.db
               name: db-volume
               subPath: dspaces_reg.db
@@ -59,9 +56,7 @@ spec:
             - |
               echo "Initializing dspaces_reg.db...";
               touch /mnt/dspaces_reg.db;
-              echo 'yutian' > /mnt/yutian.txt;
               cat /mnt/dspaces_reg.db;
-              cat /mnt/yutian.txt;
               chmod 666 /mnt/dspaces_reg.db; # Set permissions
           volumeMounts:
             - name: db-volume

@@ -28,8 +28,6 @@ spec:
               value: "8001"
             - name: DSPACES_SERVER_PORT
               value: "4000"
-            # - name: OFI_STRING
-            #   value: "tcp"
           resources:
             limits:
               memory: "512Mi"
