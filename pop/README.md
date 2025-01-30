@@ -1,3 +1,5 @@
+Draft
+
 Set up
 1. use pop/generate-k8s-secret.sh to package the env var into a k8s secret resource
 2. `sh apply-k8s-rsc.sh` to apply all .yaml manifests to the cluster(based on your current context)
