@@ -24,4 +24,3 @@ data:
     namespaces='url'
     file='url_mod.py'
 
-  dspaces_reg.db: ""

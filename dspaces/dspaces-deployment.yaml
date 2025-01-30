@@ -1,51 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose --file ../docker-compose-resolved.yml convert
-    kompose.version: 1.34.0 (HEAD)
-  labels:
-    io.kompose.service: dspaces
-  name: dspaces
+  name: dspaces-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: dspaces
-  strategy:
-    type: Recreate
+      app: dspaces-server
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose --file ../docker-compose-resolved.yml convert
-        kompose.version: 1.34.0 (HEAD)
       labels:
-        io.kompose.service: dspaces
+        app: dspaces-server
     spec:
       containers:
-        - env:
+        - name: dspaces-server
+          image: philipdavis/dspaces-server:v01082024
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+              protocol: TCP
+          env:
             - name: DSPACES_DEBUG
               value: "1"
             - name: DSPACES_SERVER_CHECKOUT
               value: v2.3.0-beta
             - name: DSPACES_SERVER_PORT
               value: "4000"
-            - name: OFI_STRING
-              value: tcp://eth0:4000
             - name: REPO_BRANCH
               value: v2.3.0-beta
-          image: philipdavis/dspaces-server:v01082024
-          livenessProbe:
-            exec:
-              command:
-                - nc
-                - -z
-                - dspaces
-                - "4000"
-          name: dspaces
-          ports:
-            - containerPort: 4000
-              protocol: TCP
+            - name: OFI_STRING
+              value: tcp://eth0:4000
           resources:
             limits:
               memory: "512Mi"
@@ -57,12 +41,37 @@ spec:
             - mountPath: /dspaces.toml
               name: dspaces-cm
               subPath: dspaces.toml
+            - mountPath: /yutian.txt
+              name: db-volume
+              subPath: yutian.txt
             - mountPath: /dspaces_reg.db
-              name: dspaces-cm
+              name: db-volume
               subPath: dspaces_reg.db
+
+      # Create database file before starting the server
+      # Mount the db file to shared volume
+      initContainers:
+        - name: init-database
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Initializing dspaces_reg.db...";
+              touch /mnt/dspaces_reg.db;
+              echo 'yutian' > /mnt/yutian.txt;
+              cat /mnt/dspaces_reg.db;
+              cat /mnt/yutian.txt;
+              chmod 666 /mnt/dspaces_reg.db; # Set permissions
+          volumeMounts:
+            - name: db-volume
+              mountPath: /mnt
+
       volumes:
         - name: dspaces-cm
           configMap:
             name: dspaces-cm
+        - name: db-volume
+          emptyDir: {}
       restartPolicy: Always
       
