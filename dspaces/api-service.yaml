@@ -4,6 +4,7 @@ metadata:
   name: dspaces-api-service
   labels:
     app: dspaces-api
+  namespace: dspaces
 spec:
   selector:
     app: dspaces-api
