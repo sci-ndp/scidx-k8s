@@ -24,8 +24,8 @@ For more information on Kubernetes and EKS, refer to the following resources:
 3. [Deployment Instructions](#deployment-instructions)
     - [Automatic Deployment (Recommended)](#1-automatic-deployment-recommended)
     - [Manual Deployment (Step-by-Step)](#2-manual-deployment-step-by-step)
-    - [Verifying the Deployment](#verifying-the-deployment)
-    - [Next Steps](#next-steps)
+    - [Verifying the Deployment](#3-verifying-the-deployment)
+    - [Next Steps](#4-next-steps)
 4. [Troubleshooting](#troubleshooting)
 5. [Feedback](#feedback)
 
