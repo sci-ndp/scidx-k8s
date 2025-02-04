@@ -1,0 +1,63 @@
+# NGINX Ingress Controller Installation and Deletion Guide
+
+This guide provides instructions on how to install and delete the NGINX Ingress Controller on an EKS cluster using a series of shell scripts.
+
+## Prerequisites
+- Ensure you have `kubectl` and `helm` installed and configured to interact with your EKS cluster.
+
+## Additional Resources
+
+For more information on `kubectl` and `helm`, refer to the following resources:
+
+- [kubectl Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+- [Helm Installation Guide](https://helm.sh/docs/intro/install/)
+- [Helm Documentation](https://helm.sh/docs/intro/using_helm/)
+
+## Installation
+
+1. **Make Shell Scripts Executable**
+
+    Run the following command to make all the shell scripts executable:
+    ```bash
+    chmod +x *.sh
+    ```
+
+2. **Add the NGINX Ingress Helm Repository**
+
+    Run the `add-repo.sh` script to add the NGINX Ingress Helm repository and update it:
+    ```bash
+    ./add-repo.sh
+    ```
+
+3. **Install the NGINX Ingress Controller**
+
+    Execute the `install.sh` script to install the NGINX Ingress Controller with a LoadBalancer service type:
+    ```bash
+    ./install.sh
+    ```
+
+4. **Verify the Installation**
+
+    Use the `verify-installation.sh` script to ensure the ingress controller pods are running and to check the service's external IP:
+    ```bash
+    ./verify-installation.sh
+    ```
+
+## Deletion
+
+1. **Uninstall the NGINX Ingress Controller**
+
+    Run the `delete.sh` script to uninstall the NGINX Ingress Controller and delete the `ingress-nginx` namespace:
+    ```bash
+    ./delete.sh
+    ```
+
+2. **Verify the Deletion**
+
+    Execute the `verify-deletion.sh` script to confirm that all resources in the `ingress-nginx` namespace have been removed:
+    ```bash
+    ./verify-deletion.sh
+    ```
+
+By following these steps, you can easily manage the lifecycle of the NGINX Ingress Controller on your EKS cluster.
