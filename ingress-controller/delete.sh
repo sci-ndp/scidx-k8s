@@ -5,4 +5,4 @@ helm uninstall nginx-ingress -n ingress-nginx
 kubectl delete namespace ingress-nginx
 
 # Remove the ingress-nginx Helm repo (optional)
-helm repo remove ingress-nginx
+# helm repo remove ingress-nginx
