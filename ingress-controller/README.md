@@ -1,6 +1,6 @@
 # NGINX Ingress Controller Installation and Deletion Guide
 
-This guide provides instructions on how to install and delete the NGINX Ingress Controller on an EKS cluster using a series of shell scripts.
+This guide provides step-by-step instructions for installing and deleting the NGINX Ingress Controller on an EKS cluster using shell scripts. For more detailed information, refer to the [NGINX Ingress Controller documentation](https://kubernetes.github.io/ingress-nginx/).
 
 ## Prerequisites
 - Ensure you have `kubectl` and `helm` installed and configured to interact with your EKS cluster.
