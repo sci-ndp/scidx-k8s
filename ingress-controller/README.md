@@ -1,9 +1,9 @@
 # NGINX Ingress Controller Installation and Deletion Guide
 
-This guide provides step-by-step instructions for installing and deleting the NGINX Ingress Controller on an EKS cluster using shell scripts. For more detailed information, refer to the [NGINX Ingress Controller documentation](https://kubernetes.github.io/ingress-nginx/).
+This guide provides step-by-step instructions for installing and deleting the NGINX Ingress Controller on an EKS cluster or a MicroK8s cluster using shell scripts. For more detailed information, refer to the [NGINX Ingress Controller documentation](https://kubernetes.github.io/ingress-nginx/).
 
 ## Prerequisites
-- Ensure you have `kubectl` and `helm` installed and configured to interact with your EKS cluster.
+- Ensure you have `kubectl` and `helm` installed and configured to interact with your Kubernetes cluster.
 
 ## Additional Resources
 
@@ -15,6 +15,8 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 - [Helm Documentation](https://helm.sh/docs/intro/using_helm/)
 
 ## Installation
+
+### For EKS Cluster
 
 1. **Make Shell Scripts Executable**
 
@@ -44,6 +46,45 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     ./verify-installation.sh
     ```
 
+### For MicroK8s Cluster
+
+1. **Enable MetalLB**
+
+    MetalLB is a load-balancer implementation for bare metal Kubernetes clusters, providing the functionality of a cloud provider's load balancer. 
+    
+    Run the following command to enable MetalLB, which provides load balancer functionality:
+    ```bash
+    microk8s enable metallb
+    ```
+
+2. **Make Shell Scripts Executable**
+
+    Run the following command to make all the shell scripts executable:
+    ```bash
+    chmod +x *.sh
+    ```
+
+3. **Add the NGINX Ingress Helm Repository**
+
+    Run the `add-repo.sh` script to add the NGINX Ingress Helm repository and update it:
+    ```bash
+    ./add-repo.sh
+    ```
+
+4. **Install the NGINX Ingress Controller**
+
+    Execute the `install.sh` script to install the NGINX Ingress Controller with a LoadBalancer service type:
+    ```bash
+    ./install.sh
+    ```
+
+5. **Verify the Installation**
+
+    Use the `verify-installation.sh` script to ensure the ingress controller pods are running and to check the service's external IP:
+    ```bash
+    ./verify-installation.sh
+    ```
+
 ## Deletion
 
 1. **Uninstall the NGINX Ingress Controller**
@@ -60,4 +101,4 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     ./verify-deletion.sh
     ```
 
-By following these steps, you can easily manage the lifecycle of the NGINX Ingress Controller on your EKS cluster.
+By following these steps, you can manage the lifecycle of the NGINX Ingress Controller on your EKS or MicroK8s cluster.
