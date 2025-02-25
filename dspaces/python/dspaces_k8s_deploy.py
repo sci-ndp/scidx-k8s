@@ -73,6 +73,39 @@ def apply_manifest(api_client, manifest, namespace=None):
 
     print(f"Successfully applied {kind} '{name}'")
 
+
+def get_loadbalancer_url(api_instance, namespace, service_name="nginx-ingress-ingress-nginx-controller", timeout=300):
+    """
+    Wait for and retrieve the external IP or hostname of the nginx-ingress-controller LoadBalancer service.
+    Returns the access URL with /dspaces path.
+    """
+    print(f"Waiting for LoadBalancer endpoint for service '{service_name}' in namespace '{namespace}'...")
+    start_time = time.time()
+    while True:
+        try:
+            service = api_instance.read_namespaced_service(name=service_name, namespace=namespace)
+            if service.status.load_balancer.ingress:
+                ingress = service.status.load_balancer.ingress[0]
+                # Check for either IP or hostname
+                if ingress.ip:
+                    endpoint = ingress.ip
+                elif ingress.hostname:
+                    endpoint = ingress.hostname
+                else:
+                    raise Exception(f"No valid IP or hostname found in LoadBalancer ingress for '{service_name}'")
+                url = f"http://{endpoint}/dspaces"
+                print(f"LoadBalancer URL is ready: {url}")
+                return url
+            if time.time() - start_time > timeout:
+                raise Exception(f"Timeout waiting for LoadBalancer endpoint for '{service_name}'")
+            time.sleep(5)
+        except client.ApiException as e:
+            if e.status == 404:
+                raise Exception(f"Service '{service_name}' not found in namespace '{namespace}'")
+            else:
+                raise e
+
+# ---------------------------------------------------------------------------------------
 def main():
     """
     Main function to deploy Kubernetes resources from YAML manifests.
@@ -140,7 +173,12 @@ def main():
         for error in errors:
             print(error)
         exit(1)
+    
+    access_url = get_loadbalancer_url(v1_api, 'ingress-nginx')
+    print(f"Access the dspaces at: {access_url}")
+    return access_url
 
+# ---------------------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         main()
