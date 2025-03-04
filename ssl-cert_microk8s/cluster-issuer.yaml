@@ -1,0 +1,18 @@
+# Defines how cert-manager will request certificates. 
+# Configured to use Let's Encrypt's ACME protocol
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: yutian.qin@utah.edu
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+          
