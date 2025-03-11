@@ -1,4 +1,4 @@
-# NGINX Ingress Controller Installation and Deletion Guide
+# Documentation: NGINX Ingress Controller Installation and Deletion Guide
 
 This guide provides step-by-step instructions for installing and deleting the NGINX Ingress Controller on an EKS cluster or a MicroK8s cluster using shell scripts. For more detailed information, refer to the [NGINX Ingress Controller documentation](https://kubernetes.github.io/ingress-nginx/).
 
