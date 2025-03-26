@@ -1,4 +1,4 @@
-# sciDX-k8s-resource
+# sciDX Kubernetes Resource
 
 This repository contains Kubernetes manifests and supporting files for deploying and managing applications within a Kubernetes cluster.
 
