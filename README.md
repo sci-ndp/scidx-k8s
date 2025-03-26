@@ -1,6 +1,6 @@
 # sciDX Kubernetes Resource
 
-This repository contains Kubernetes manifests and supporting files for deploying and managing applications within a Kubernetes cluster.
+This repository contains Kubernetes manifests and supporting files for deploying and managing scidx services stack within a Kubernetes cluster.
 
 ## Prerequisite - External Access Setup
 
