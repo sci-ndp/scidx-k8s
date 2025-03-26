@@ -16,7 +16,7 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 
 ## Installation
 
-### For EKS Cluster
+#### For AWS EKS Cluster
 
 1. **Make Shell Scripts Executable**
 
@@ -46,7 +46,7 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     ./verify-installation.sh
     ```
 
-### For MicroK8s Cluster
+#### For MicroK8s Cluster
 
 1. **Enable MetalLB**
 
@@ -68,7 +68,7 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 
     Run the `add-repo.sh` script to add the NGINX Ingress Helm repository and update it:
     ```bash
-    ./add-repo.sh
+    ./add-&-update-repo.sh
     ```
 
 4. **Install the NGINX Ingress Controller**

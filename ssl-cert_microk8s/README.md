@@ -14,7 +14,7 @@ Ensure that your domain resolves to the external IP of your NGINX Ingress contro
     ```sh
     kubectl get svc -n ingress-nginx
     ```
-    If the NGINX Ingress controller is not installed, navigate to the [`../ingress-controller`](../ingress-controller) directory and follow the instructions to install the NGINX Ingress controller.
+    If the NGINX Ingress controller is not installed, navigate to the [`../nginx-ingress-controller`](../nginx-ingress-controller) directory and follow the instructions to install the NGINX Ingress controller.
 
 2. **Enable cert-manager Addon**: Enable the cert-manager addon in your MicroK8s cluster.
     ```sh
