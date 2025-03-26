@@ -29,7 +29,7 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 
     Run the `add-repo.sh` script to add the NGINX Ingress Helm repository and update it:
     ```bash
-    ./add-repo.sh
+    ./add-&-update-repo.sh
     ```
 
 3. **Install the NGINX Ingress Controller**
