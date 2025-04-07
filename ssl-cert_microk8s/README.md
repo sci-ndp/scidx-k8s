@@ -23,7 +23,7 @@ Ensure that your domain resolves to the external IP of your NGINX Ingress contro
 
 3. **Create ClusterIssuer**: Define an ClusterIssuer resource to specify the certificate authority.
     ```sh
-    kubectl apply -f letsencrypt_cluster_issuer.yaml
+    kubectl apply -f letsencrypt_cluster_issuer_prod.yaml
     ```
 
 ### Verify
