@@ -34,7 +34,7 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 
     Run the [`create-kafka-cluster.sh`](./create-kafka-cluster.sh) script to deploy the Kafka cluster by applying the [`kafka-cluster-0.yaml`](./kafka-cluster-0.yaml) configuration file to your Kubernetes cluster. This file is a Custom Resource (CR) used by the Strimzi Operator to define and manage the Kafka cluster.
     ```bash
-    ./apply-kafka-cluster.sh
+    ./create-kafka-cluster.sh
     ```
 
 
