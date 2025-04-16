@@ -5,16 +5,10 @@ metadata:
   namespace: pop
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - vdc-190.chpc.utah.edu
-      secretName: pop-api-tls
   rules:
-    - host: vdc-190.chpc.utah.edu
-      http:
+    - http:
         paths:
         - path: /pop(/|$)(.*)
           pathType: ImplementationSpecific

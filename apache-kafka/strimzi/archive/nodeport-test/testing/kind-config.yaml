@@ -1,0 +1,23 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      # Kafka Brokers
+      - containerPort: 31090
+        hostPort: 31090
+        listenAddress: "0.0.0.0"
+      - containerPort: 31091
+        hostPort: 31091
+        listenAddress: "0.0.0.0"
+      - containerPort: 31092
+        hostPort: 31092
+        listenAddress: "0.0.0.0"
+
+      # NGINX Ingress Controller (for HTTP/S)
+      - containerPort: 32080
+        hostPort: 32080
+        listenAddress: "0.0.0.0"
+      - containerPort: 32443
+        hostPort: 32443
+        listenAddress: "0.0.0.0"

@@ -1,0 +1,37 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: my-kafka
+  namespace: kafka
+spec:
+  kafka:
+    version: 3.8.1
+    replicas: 4
+    listeners:
+      - name: external
+        port: 9094
+        type: nodeport
+        tls: false
+        configuration:
+          brokers:
+            - broker: 0
+              advertisedHost: <nginx-ingress-hostname/external-ip>
+              nodePort: 31090
+            - broker: 1
+              advertisedHost: <nginx-ingress-hostname/external-ip>
+              nodePort: 31091
+            - broker: 2
+              advertisedHost: <nginx-ingress-hostname/external-ip>
+              nodePort: 31092
+            - broker: 3
+              advertisedHost: <nginx-ingress-hostname/external-ip>
+              nodePort: 31093
+    storage:
+      type: ephemeral
+  zookeeper:
+    replicas: 3
+    storage:
+      type: ephemeral
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

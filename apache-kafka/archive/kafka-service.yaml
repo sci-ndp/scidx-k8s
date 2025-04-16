@@ -1,0 +1,19 @@
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: kafka
+    namespace: default
+  spec:
+    ports:
+    - port: 9092
+      targetPort: 9092
+      protocol: TCP
+      name: client
+    - port: 9094
+      targetPort: 9094
+      protocol: TCP
+      name: external
+    selector:
+      app.kubernetes.io/name: kafka
+      app.kubernetes.io/instance: kafka
+    type: ClusterIP

@@ -1,0 +1,52 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: my-cluster
+  namespace: kafka
+spec:
+  kafka:
+    replicas: 3
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: external
+        port: 9094
+        type: loadbalancer
+        tls: false
+        configuration:
+          bootstrap:
+            loadBalancerIP: <loadbalancerip>  # Optional: Specify desired IP if supported
+            annotations:
+              metallb.universe.tf/allow-shared-ip: kafka-shared-ip
+          brokers:
+            - broker: 0
+              advertisedHost: <loadbalancerip>
+              advertisedPort: 9094
+              annotations:
+                metallb.universe.tf/allow-shared-ip: kafka-shared-ip
+            - broker: 1
+              advertisedHost: <loadbalancerip>
+              advertisedPort: 9095
+              annotations:
+                metallb.universe.tf/allow-shared-ip: kafka-shared-ip
+            - broker: 2
+              advertisedHost: <loadbalancerip>
+              advertisedPort: 9096
+              annotations:
+                metallb.universe.tf/allow-shared-ip: kafka-shared-ip
+    config:
+      log.message.format.version: "3.5"
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+    storage:
+      type: ephemeral
+  zookeeper:
+    replicas: 1
+    storage:
+      type: ephemeral
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

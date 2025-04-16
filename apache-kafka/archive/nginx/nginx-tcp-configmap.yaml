@@ -1,0 +1,9 @@
+# Allow TCP traffic on port 9094
+# The Nginx Ingress Controller needs to reference this TCP ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-nginx-tcp
+  namespace: ingress-nginx
+data:
+  "9094": "default/kafka:9094"

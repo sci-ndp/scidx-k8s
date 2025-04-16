@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ebs-csi-controller-sa
+  namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::515966508187:role/eksctl-sci-addon-iamserviceaccount-kube-syste-Role1-lrbL9Wohw0v8
