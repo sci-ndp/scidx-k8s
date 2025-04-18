@@ -1,1 +1,0 @@
-helm upgrade kafka bitnami/kafka -f kafka-values.yaml --namespace default

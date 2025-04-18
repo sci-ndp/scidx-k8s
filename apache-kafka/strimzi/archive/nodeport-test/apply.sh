@@ -1,1 +1,0 @@
-kubectl apply -f kafka-external-nodeport.yaml
