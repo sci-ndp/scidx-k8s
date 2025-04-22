@@ -1,0 +1,175 @@
+# Notes:
+# NDP Test Nautilus namespace: ndp-test
+# Install client-secret k8s secret (need to insert it in the file ndp-hub/my_secret.yaml): kubectl create secret generic jupyterhub-secret --from-file=values.yaml=ndp-hub/my_secret.yaml -n ndp-test
+# Install from ./helm folder: helm upgrade --cleanup-on-fail --install ndp-hub ndp-hub --kube-context nautilus --namespace ndp-test --values ndp-hub/values_test.yaml
+# Uninstall: helm uninstall ndp-hub --kube-context nautilus --namespace ndp-test
+# URL: ndp-test-jupyterhub.nrp-nautilus.io
+
+jupyterhub:
+  hub:
+    image:
+      name: gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jh
+      tag: "2.0.11"
+    extraEnv:
+      JUPYTERHUB_METRICS_API_KEY: 93eb9f05da5b5e0605a035a801a1ccff
+    existingSecret: jupyterhub-secret
+    config:
+      GenericOAuthenticator:
+        oauth_callback_url: https://ndp-test-jupyterhub.nrp-nautilus.io/hub/oauth_callback
+        authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+        token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+        userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
+        logout_redirect_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=https://ndp-test-jupyterhub.nrp-nautilus.io/
+        login_service: keycloak
+        username_claim: preferred_username
+        userdata_params:
+          state: state
+        allow_all: False
+        allowed_groups: ["jhub_user"]
+        auto_login: True
+        enable_auth_state: True
+        admin_users: [ "segurvich@ucsd.edu" ]
+        scope:
+          - openid
+          - profile
+      JupyterHub:
+        authenticator_class: generic-oauth
+    service:
+      type: ClusterIP
+      annotations: {}
+      ports:
+        nodePort:
+      loadBalancerIP:
+    deploymentStrategy:
+      type: Recreate
+    db:
+      type: sqlite-pvc
+      pvc:
+        accessModes:
+          - ReadWriteOnce
+        storage: 10Gi
+        storageClassName: rook-ceph-block
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    networkPolicy:
+      enabled: false
+# Commenting this out because new hub docker image has templates and pics inside it
+#    initContainers:
+#      - name: git-clone-templates
+#        image: alpine/git
+#        args:
+#          - clone
+#          - --single-branch
+#          - --branch=main
+#          - --depth=1
+#          - --
+#          - https://github.com/national-data-platform/jupyter-templates.git
+#          - /etc/jupyterhub/custom
+#        securityContext:
+#          runAsUser: 0
+#        volumeMounts:
+#          - name: custom-templates
+#            mountPath: /etc/jupyterhub/custom
+#    extraVolumes:
+#      - name: custom-templates
+#        emptyDir: { }
+#    extraVolumeMounts:
+#      - name: custom-templates
+#        mountPath: /etc/jupyterhub/custom
+    extraConfig:
+
+      default.py: |
+# spawner_test.py code here
+
+  proxy:
+    secretToken: 693f72d455485b0a90a27968685e08e006523320e914f07b1f15fc4e8487d6fd
+    service:
+      type: ClusterIP
+    chp:
+      resources:
+        limits:
+          cpu: "2"
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 512Mi
+
+  singleuser:
+    uid: 1000
+    fsGid: 100
+    allowPrivilegeEscalation: true
+    extraPodConfig:
+      securityContext:
+          fsGroupChangePolicy: "OnRootMismatch"
+    cloudMetadata:
+      blockWithIptables: false
+    networkPolicy:
+      enabled: false
+    initContainers:
+    - name: volume-permissions
+      image: busybox
+      command: ["sh", "-c", "chmod 777 -R /home/jovyan/work/_User-Persistent-Storage_CephBlock_"]
+      volumeMounts:
+        - mountPath: /home/jovyan/work/_User-Persistent-Storage_CephBlock_
+          name: volume-ceph-bw-{username}
+    storage:
+      extraLabels: {}
+      capacity: 10Gi
+      homeMountPath: /home/jovyan/work/_User-Persistent-Storage_CephBlock_
+      dynamic:
+        storageClass: rook-ceph-block
+        pvcNameTemplate: claim-ceph-bw-{username}
+        volumeNameTemplate: volume-ceph-bw-{username}
+        storageAccessModes: [ReadWriteOnce]
+
+    image:
+      name: gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn
+      tag: minimal_0.0.10
+    startTimeout: 1200
+    cpu:
+      limit: 3
+      guarantee: 3
+    memory:
+      limit: 32G
+      guarantee: 32G
+    extraResource:
+      limits: {}
+      guarantees: {}
+    cmd: jupyterhub-singleuser
+    defaultUrl: "/lab"
+
+  scheduling:
+    userScheduler:
+      enabled: false
+    userPlaceholder:
+      enabled: false
+  # prePuller relates to the hook|continuous-image-puller DaemonsSets
+  prePuller:
+    hook:
+      enabled: false
+    continuous:
+      enabled: false
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: haproxy
+    hosts: ["ndp-test-jupyterhub.nrp-nautilus.io"]
+    pathSuffix: ''
+    tls:
+      - hosts:
+        - ndp-test-jupyterhub.nrp-nautilus.io
+
+  cull:
+    enabled: true
+    users: false
+    removeNamedServers: false
+    timeout: 3600
+    every: 600
+    concurrency: 10
+    maxAge: 0
