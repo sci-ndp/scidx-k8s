@@ -15,13 +15,16 @@ jupyterhub:
     existingSecret: jupyterhub-secret
     config:
       GenericOAuthenticator:
-        oauth_callback_url: http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com/hub/oauth_callback
         # oauth_callback_url: https://ndp-jupyterhub.nrp-nautilus.io/hub/oauth_callback
-        authorize_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
-        token_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
-        userdata_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
-        logout_redirect_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=https://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com/
+        # authorize_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+        # token_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+        # userdata_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
         # logout_redirect_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=https://ndp-jupyterhub.nrp-nautilus.io/
+        oauth_callback_url: http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com/hub/oauth_callback
+        authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+        token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+        userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
+        logout_redirect_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com
         login_service: keycloak
         username_claim: preferred_username
         userdata_params:
@@ -30,7 +33,7 @@ jupyterhub:
         allowed_groups: ["jhub_user"]
         auto_login: True
         enable_auth_state: True
-        admin_users: [ "segurvich@ucsd.edu" ]
+        admin_users: [ "yutian.qin@utah.edu" ]
         scope:
           - openid
           - profile
@@ -50,7 +53,8 @@ jupyterhub:
         accessModes:
           - ReadWriteOnce
         storage: 10Gi
-        storageClassName: rook-ceph-block
+        # storageClassName: rook-ceph-block
+        storageClassName: gp2
     resources:
       limits:
         cpu: "2"
@@ -89,7 +93,7 @@ jupyterhub:
 # spawner_prod.py code here
 
   proxy:
-    secretToken: adf58c2f0d8ad1fe9d0f132b173f51feaae239a2c60b9acbf9aa5d665fdecb1b
+    secretToken: 1cf9eface1096f44768422be87da41bbae87fabf05b80156c61f644b0cf23f51
     service:
       type: ClusterIP
     chp:
@@ -112,6 +116,7 @@ jupyterhub:
       blockWithIptables: false
     networkPolicy:
       enabled: false
+      
     initContainers:
     - name: volume-permissions
       image: busybox
@@ -124,8 +129,8 @@ jupyterhub:
       capacity: 10Gi
       homeMountPath: /home/jovyan/work/_User-Persistent-Storage_CephBlock_
       dynamic:
-        storageClassName: gp2
         # storageClass: rook-ceph-block
+        storageClass: gp2
         pvcNameTemplate: claim-ceph-bw-{username}
         volumeNameTemplate: volume-ceph-bw-{username}
         storageAccessModes: [ReadWriteOnce]
@@ -158,15 +163,6 @@ jupyterhub:
     continuous:
       enabled: false
 
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx  # Use NGINX Ingress Controller
-      nginx.ingress.kubernetes.io/rewrite-target: /  # Optional: Ensures proper path routing
-    hosts: []  # Leave empty to match all hosts (i.e., use the external IP directly)
-    pathSuffix: ''
-    tls: []  # Disable TLS
-
   # ingress:
   #   enabled: true
   #   annotations:
@@ -176,6 +172,12 @@ jupyterhub:
   #   tls:
   #     - hosts:
   #       - ndp-jupyterhub.nrp-nautilus.io
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts: []
+    tls: []
 
   cull:
     enabled: true

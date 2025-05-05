@@ -10,4 +10,4 @@ deploy-staging:
 	 helm upgrade --cleanup-on-fail --install ndp-hub ndp-hub --kube-context nautilus --namespace ndp-staging --values ndp-hub/_values_staging.yaml
 deploy-prod:
 	 cd ndp-hub && python generate_values.py --env prod
-	 helm upgrade --cleanup-on-fail --install ndp-hub ndp-hub --kube-context nautilus --namespace ndp --values ndp-hub/_values_prod.yaml
+	 helm upgrade --cleanup-on-fail --install ndp-hub ndp-hub --kube-context arn:aws:eks:us-west-2:515966508187:cluster/sci --namespace jupyterhub --values ndp-hub/_values_prod.yaml
