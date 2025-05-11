@@ -1,0 +1,52 @@
+# This file can update the JupyterHub Helm chart's default configuration values.
+#
+# For reference see the configuration reference and default values, but make
+# sure to refer to the Helm chart version of interest to you!
+#
+# Introduction to YAML:     https://www.youtube.com/watch?v=cdLNKUoMc6c
+# Chart config reference:   https://zero-to-jupyterhub.readthedocs.io/en/stable/resources/reference.html
+# Chart default values:     https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/HEAD/jupyterhub/values.yaml
+# Available chart versions: https://hub.jupyter.org/helm-chart/
+
+
+hub:
+  config:
+    GenericOAuthenticator:
+      client_id: jhub-k8s
+      client_secret: zxWTNorm4SKBZPZKrfvjBvTUglVhENP4
+      oauth_callback_url: http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com/hub/oauth_callback
+      authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+      token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+      userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
+      # logout_redirect_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com
+      login_service: NDP Keycloak
+      username_claim: preferred_username
+      userdata_params:
+        state: state
+      # Restrict access to specific Keycloak users
+      allow_all: false 
+      # Group permissions: only allow users in the "jhub_user" group to log in
+      manage_groups: true
+      allowed_groups: ["jhub_user"]
+      # Admin user(s)
+      admin_users: [ "yutian.qin@utah.edu" ]
+      scope:
+        - openid
+        - profile
+        - email
+    # Tell JupyterHub to use the GenericOAuthenticator
+    JupyterHub:
+      authenticator_class: generic-oauth
+
+# # Tell JupyterHub *not* to create a LoadBalancer service
+# proxy:
+#   service:
+#     type: ClusterIP
+
+# # Use nginx ingress controller to expose JupyterHub
+# ingress:
+#   enabled: true
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#   hosts: []
+#   tls: []

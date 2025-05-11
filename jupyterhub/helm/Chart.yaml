@@ -3,7 +3,8 @@ appVersion: "1.0"
 description: A deployment chart for a JupyterHub
 name: scidx-jhub
 version: 0.1.0
+# For 'helm dependency update' to work, list dependencies here
 dependencies:
 - name: jupyterhub
-  version: "v2.0.0"
+  version: "*"
   repository: https://jupyterhub.github.io/helm-chart/

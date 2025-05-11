@@ -1,30 +1,32 @@
-# python generate_values.py
-# helm upgrade --cleanup-on-fail --install scidx-jhub scidx-jhub --kube-context arn:aws:eks:us-west-2:515966508187:cluster/sci --create-namespace jupyterhub --values _values.yaml
-
-
 # Default target
 .PHONY: default
 default: deploy
 
 # Variables
-HELM_RELEASE := scidx-jhub
-HELM_CHART := .
-KUBE_CONTEXT := arn:aws:eks:us-west-2:515966508187:cluster/sci
+HELM_RELEASE := scidx-jhub # Name of the Helm release
+HELM_CHART := . # Path to the Helm chart
+KUBE_CONTEXT := arn:aws:eks:us-west-2:515966508187:cluster/sci # Kubernetes cluster context
 NAMESPACE := jupyterhub
-VALUES_FILE := _values.yaml
+VALUES_FILE := config.yaml # Path to the values file
 
-# Generate the values file by embedding spawner.py into values.yaml
-.PHONY: generate
-generate:
-	@echo "Generating $(VALUES_FILE)..."
-	python generate_values.py
+# # Generate the values file by embedding spawner.py into values.yaml
+# .PHONY: generate
+# generate:
+# 	@echo "Generating $(VALUES_FILE)..."
+# 	python generate_values.py
+
+# Updates Helm chart dependencies by downloading them into the charts/ directory
+.PHONY: update-deps
+update-deps:
+	helm dependency update
 
 # Deploy the Helm chart
 .PHONY: deploy
-deploy: generate
+# deploy: generate
+deploy:
 	@echo "Deploying $(HELM_RELEASE) to $(NAMESPACE)..."
-	helm upgrade --cleanup-on-fail --install $(HELM_RELEASE) $(HELM_CHART) \
-		--kube-context $(KUBE_CONTEXT) \
+	helm upgrade --cleanup-on-fail \
+		--install $(HELM_RELEASE) $(HELM_CHART) \
 		--namespace $(NAMESPACE) \
 		--create-namespace \
 		--values $(VALUES_FILE)
@@ -48,11 +50,11 @@ status:
 # Get the Ingress IP for accessing JupyterHub
 .PHONY: get-ingress
 get-ingress:
-	@echo "Fetching Ingress details for $(HELM_RELEASE) in $(NAMESPACE)..."
+	@echo "Fetching Ingress details for $(HELM_RELEASE) ..."
 	@kubectl get ingress -n $(NAMESPACE) -o wide
 
-# Clean up generated files
-.PHONY: clean
-clean:
-	@echo "Cleaning up generated files..."
-	rm -f $(VALUES_FILE)
+# # Clean up generated files
+# .PHONY: clean
+# clean:
+# 	@echo "Cleaning up generated files..."
+# 	rm -f $(VALUES_FILE)

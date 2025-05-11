@@ -1,0 +1,116 @@
+# This file can update the JupyterHub Helm chart's default configuration values.
+#
+# For reference see the configuration reference and default values, but make
+# sure to refer to the Helm chart version of interest to you!
+#
+# Introduction to YAML:     https://www.youtube.com/watch?v=cdLNKUoMc6c
+# Chart config reference:   https://zero-to-jupyterhub.readthedocs.io/en/stable/resources/reference.html
+# Chart default values:     https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/HEAD/jupyterhub/values.yaml
+# Available chart versions: https://hub.jupyter.org/helm-chart/
+
+jupyterhub:
+  hub:
+    image:
+      name: yutianqin/scidx-k8s-hub
+      tag: "v1"
+    # Default values
+    config:
+      # Keycloak OIDC authentication
+      GenericOAuthenticator:
+        client_id: jhub-k8s
+        client_secret: zxWTNorm4SKBZPZKrfvjBvTUglVhENP4
+        oauth_callback_url: http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com/hub/oauth_callback
+        authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+        token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+        userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
+        # logout_redirect_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com # When configured, users are not presented with the JupyterHub logout page, but instead redirected to this destination
+
+        login_service: NDP Keycloak # Sets the button text for unauthenticated users if auto_login is not True
+        auto_login: True # Automatically begin the login process, rather than starting with a “Login with…” link
+
+        # When userdata_url returns a json response, the username will be taken from this key
+        # Can be a string key name or a callable that accepts the returned userdata json (as a dict) and returns the username
+        # What keys are available will depend on the scopes requested and the authenticator used.
+        username_claim: preferred_username
+        userdata_params: # Userdata params to get user data login information
+          state: state
+
+        allow_all: false # Restrict access to specific Keycloak users 
+        # Group permissions: only allow users in the "jhub_user" group to log in
+        manage_groups: true # ← enable group fetching, prerequisite for allow_groups
+        allowed_groups: ["jhub_user"]
+        # Admin user(s): access to the JupyterHub admin interface after login
+        admin_users: [ "yutian.qin@utah.edu" ]
+        scope: # The OAuth scopes to request
+          - openid
+          - profile
+          - email
+      # Tell JupyterHub to use the GenericOAuthenticator(NDP Keycloak)
+      JupyterHub:
+        authenticator_class: generic-oauth
+    # Post processing of the hub
+    # The `extraConfig` section allows for custom configuration to be injected into the JupyterHub configuration.
+    extraConfig:
+      custom_branding: |
+        # Custom hub image(yutianqin/scidx-k8s-hub:v1) has template pages and pic mounted, by setting this, it overrides the default template
+        c.JupyterHub.template_paths = ['/etc/jupyterhub/custom']
+      profiles: |
+        # Define a list of spawn profiles (each has a display_name and a kubespawner_override dict)
+        c.KubeSpawner.profile_list = [
+          {
+            'display_name': 'Streaming Demo',
+            'description': 'Demo environment with streaming data',
+            'kubespawner_override': {
+              'image': 'yutianqin/streaming-demo:v2'
+            }
+          }
+        ]
+
+  # The `singleuser` section contains configuration settings 
+  # for the single-user notebook servers spawned by JupyterHub
+  singleuser:
+    # Configuration for an init container that sets permissions on a specific volume.
+    # The init container("volume-permissions") and uses the "busybox" image.
+    # It runs a shell command to recursively set the permissions of the directory
+    # "/home/jovyan/work/_user-data" to 777 (read, write, and execute for all users).
+    # This ensures that the directory is accessible to all users.
+    # The volume is mounted at "/home/jovyan/work/_user-data" and is dynamically named
+    # based on the username (e.g., "volume-scidx_user").
+    initContainers:
+      - name: volume-permissions
+        image: busybox
+        command: ["sh", "-c", "chmod 777 -R /home/jovyan/work/_user-data"]
+        volumeMounts:
+          - mountPath: /home/jovyan/work/_user-data
+            name: volume-{username}
+    # Configuration for storage settings in JupyterHub Helm chart.
+    # - `capacity`: Specifies the storage capacity allocated for each user's volume.
+    # - `homeMountPath`: Defines the mount path within the container where user data will be stored.
+    # - `dynamic`: Configuration for dynamically provisioned storage.
+    #   - `storageClass`: The storage class to use for dynamically provisioned volumes (e.g., gp2 for AWS EBS).
+    #   - `pvcNameTemplate`: Template for naming PersistentVolumeClaims (PVCs), where `{username}` is replaced with the user's name.
+    #   - `volumeNameTemplate`: Template for naming dynamically created volumes, where `{username}` is replaced with the user's name.
+    #   - `storageAccessModes`: Specifies the access modes for the storage (e.g., `ReadWriteOnce` allows a single node to read/write).
+    storage:
+      capacity: 10Gi
+      homeMountPath: /home/jovyan/work/_user-data
+      dynamic:
+        storageClass: gp2
+        pvcNameTemplate: claim-{username}
+        volumeNameTemplate: volume-{username}
+        storageAccessModes:
+          - ReadWriteOnce
+
+  # Tell JupyterHub *not* to create a proxy as default LoadBalancer service
+  # and to use the ClusterIP service instead (i.e. no external IP, internal only)
+  proxy:
+    service:
+      type: ClusterIP
+
+  # Use Nginx Ingress Controller to expose JupyterHub
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts: []
+    tls: []

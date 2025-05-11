@@ -1,1 +1,0 @@
-helm uninstall ndp-hub --kube-context arn:aws:eks:us-west-2:515966508187:cluster/sci --namespace jupyterhub

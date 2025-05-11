@@ -1,0 +1,10 @@
+{% extends "error.html" %}
+
+  {% block h1_error %}
+  {% endblock h1_error %}
+
+{% block error_detail %}
+<img src="{{static_url("images/scidx_logo.png") }}">
+<p>Please contact Scientific Data Exchange administrators to get JupyterHub access at <a href = "mailto: yutian.qin@utah.edu">yutian.qin@utah.edu</a>.</p>
+
+{% endblock %}

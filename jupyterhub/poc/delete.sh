@@ -1,0 +1,1 @@
+helm delete jhub --namespace jupyterhub
