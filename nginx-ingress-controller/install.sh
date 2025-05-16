@@ -12,6 +12,6 @@ else
 fi
 
 # Install the NGINX ingress controller with a LoadBalancer service type
-helm install nginx-ingress ingress-nginx/ingress-nginx \
+helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
   --namespace "$NAMESPACE" \
   --set controller.service.type=LoadBalancer
