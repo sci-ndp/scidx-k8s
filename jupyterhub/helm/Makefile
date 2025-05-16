@@ -5,7 +5,7 @@ default: deploy
 # Variables
 HELM_RELEASE := scidx-jhub # Name of the Helm release
 HELM_CHART := . # Path to the Helm chart
-KUBE_CONTEXT := arn:aws:eks:us-west-2:515966508187:cluster/sci # Kubernetes cluster context
+KUBE_CONTEXT := arn:aws:eks:us-west-2:515966508187:cluster/scidx # Kubernetes cluster context
 NAMESPACE := jupyterhub
 VALUES_FILE := config.yaml # Path to the values file
 

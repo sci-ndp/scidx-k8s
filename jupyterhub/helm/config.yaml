@@ -19,7 +19,7 @@ jupyterhub:
       GenericOAuthenticator:
         client_id: jhub-k8s
         client_secret: zxWTNorm4SKBZPZKrfvjBvTUglVhENP4
-        oauth_callback_url: http://a49496f7fa9a34ba4a1b8b193ed3ff95-872419998.us-west-2.elb.amazonaws.com/hub/oauth_callback
+        oauth_callback_url: http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com/hub/oauth_callback
         authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
         token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
         userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
@@ -92,10 +92,10 @@ jupyterhub:
     #   - `volumeNameTemplate`: Template for naming dynamically created volumes, where `{username}` is replaced with the user's name.
     #   - `storageAccessModes`: Specifies the access modes for the storage (e.g., `ReadWriteOnce` allows a single node to read/write).
     storage:
-      capacity: 10Gi
+      capacity: 2Gi
       homeMountPath: /home/jovyan/work/_user-data
       dynamic:
-        storageClass: gp2
+        storageClass: ebs-sc
         pvcNameTemplate: claim-{username}
         volumeNameTemplate: volume-{username}
         storageAccessModes:
