@@ -5,4 +5,4 @@
 # '-f ./Dockerfile' explicitly specifies the Dockerfile to be used.
 # The final context for the build is the current directory ('.')
 
-docker buildx build --platform linux/amd64,linux/arm64 -t yutianqin/scidx-k8s-hub:v1 --push --no-cache -f ./Dockerfile .
+docker buildx build --platform linux/amd64,linux/arm64 -t yutianqin/scidx-k8s-hub:v2 --push --no-cache -f ./Dockerfile .

@@ -1,3 +1,4 @@
 .DS_Store
 pop-env-secret.yaml
+jupyterhub_secret.yaml
 *.pem

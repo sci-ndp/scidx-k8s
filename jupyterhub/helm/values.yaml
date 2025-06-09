@@ -1,0 +1,145 @@
+# Notes:
+# Install from ./helm folder: helm upgrade --cleanup-on-fail --install ndp-hub ndp-hub --kube-context nautilus --namespace ndp --values ndp-hub/values_prod.yaml
+# Uninstall: helm uninstall ndp-hub --kube-context nautilus --namespace ndp
+
+jupyterhub:
+  hub:
+    image:
+      name: yutianqin/ndp-k8s-hub
+      tag: "v1"
+    extraEnv:
+      JUPYTERHUB_METRICS_API_KEY: a81e4f556c8f414df20e6294543451fc
+    existingSecret: jupyterhub-secret
+    config:
+      GenericOAuthenticator:
+        oauth_callback_url: http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com//hub/oauth_callback
+        authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+        token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+        userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
+        # logout_redirect_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com/
+        login_service: keycloak
+        username_claim: preferred_username
+        userdata_params:
+          state: state
+        allow_all: False
+        allowed_groups: ["jhub_user"]
+        auto_login: True
+        enable_auth_state: True
+        admin_users: [ "yutian.qin@utah.edu" ]
+        scope:
+          - openid
+      JupyterHub:
+        authenticator_class: generic-oauth
+    service:
+      type: ClusterIP
+      annotations: {}
+      ports:
+        nodePort:
+      loadBalancerIP:
+    deploymentStrategy:
+      type: Recreate
+    db:
+      type: sqlite-pvc
+      pvc:
+        accessModes:
+          - ReadWriteOnce
+        storage: 10Gi
+        storageClassName: ebs-sc
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    networkPolicy:
+      enabled: false
+    extraConfig:
+
+      default.py: |
+# spawner.py code here
+
+  proxy:
+    secretToken: 132d98739b00ac82c57e9a974145e016b3abb3a4827c795d068b1a4037f46204
+    service:
+      type: ClusterIP
+    chp:
+      resources:
+        limits:
+          cpu: "2"
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 512Mi
+
+  singleuser:
+    uid: 1000
+    fsGid: 100
+    allowPrivilegeEscalation: true
+    extraPodConfig:
+      securityContext:
+          fsGroupChangePolicy: "OnRootMismatch"
+    cloudMetadata:
+      blockWithIptables: false
+    networkPolicy:
+      enabled: false
+    initContainers:
+    - name: volume-permissions
+      image: busybox
+      command: ["sh", "-c", "chmod 777 -R /home/jovyan/work/_User-Persistent-Storage"]
+      volumeMounts:
+        - mountPath: /home/jovyan/work/_User-Persistent-Storage
+          name: volume-{username}
+    storage:
+      extraLabels: {}
+      capacity: 10Gi
+      homeMountPath: /home/jovyan/work/_User-Persistent-Storage
+      dynamic:
+        storageClass: ebs-sc
+        pvcNameTemplate: claim-{username}
+        volumeNameTemplate: volume-{username}
+        storageAccessModes: [ReadWriteOnce]
+
+    # image:
+    #   name: gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn
+    #   tag: minimal_0.0.10
+    startTimeout: 1200
+    cpu:
+      limit: 1
+      guarantee: 1
+    memory:
+      limit: 3G
+      guarantee: 3G
+    extraResource:
+      limits: {}
+      guarantees: {}
+    cmd: jupyterhub-singleuser
+    defaultUrl: "/lab"
+
+  scheduling:
+    userScheduler:
+      enabled: false
+    userPlaceholder:
+      enabled: false
+  # prePuller relates to the hook|continuous-image-puller DaemonsSets
+  prePuller:
+    hook:
+      enabled: false
+    continuous:
+      enabled: false
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts: []
+    tls: []
+
+  cull:
+    enabled: true
+    users: false
+    removeNamedServers: false
+    timeout: 3600
+    every: 600
+    concurrency: 10
+    maxAge: 0

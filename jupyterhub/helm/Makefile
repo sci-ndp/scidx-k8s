@@ -4,16 +4,17 @@ default: deploy
 
 # Variables
 HELM_RELEASE := scidx-jhub # Name of the Helm release
-HELM_CHART := . # Path to the Helm chart
+HELM_CHART := . # Path to the Helm chart(./charts)
 KUBE_CONTEXT := arn:aws:eks:us-west-2:515966508187:cluster/scidx # Kubernetes cluster context
 NAMESPACE := jupyterhub
-VALUES_FILE := config.yaml # Path to the values file
+VALUES_FILE := config.yaml
+# VALUES_FILE := config_diy.yaml
 
-# # Generate the values file by embedding spawner.py into values.yaml
-# .PHONY: generate
-# generate:
-# 	@echo "Generating $(VALUES_FILE)..."
-# 	python generate_values.py
+# Generate the values file by embedding spawner.py into values.yaml
+.PHONY: generate
+generate:
+	@echo "Generating $(VALUES_FILE)..."
+	python generate_config.py
 
 # Updates Helm chart dependencies by downloading them into the charts/ directory
 .PHONY: update-deps
@@ -53,8 +54,8 @@ get-ingress:
 	@echo "Fetching Ingress details for $(HELM_RELEASE) ..."
 	@kubectl get ingress -n $(NAMESPACE) -o wide
 
-# # Clean up generated files
-# .PHONY: clean
-# clean:
-# 	@echo "Cleaning up generated files..."
-# 	rm -f $(VALUES_FILE)
+# Clean up generated files
+.PHONY: clean
+clean:
+	@echo "Cleaning up generated files..."
+	rm -f $(VALUES_FILE)
