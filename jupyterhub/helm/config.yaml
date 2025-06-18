@@ -9,23 +9,26 @@ jupyterhub:
       tag: "v1"
     extraEnv:
       JUPYTERHUB_METRICS_API_KEY: a81e4f556c8f414df20e6294543451fc
-    existingSecret: jupyterhub-secret
+    existingSecret: jupyterhub-secret # Passing keycloak client_id and client_secret into hub server
     config:
       GenericOAuthenticator:
-        oauth_callback_url: http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com//hub/oauth_callback
-        authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
-        token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
-        userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
+        oauth_callback_url: http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com/hub/oauth_callback
+        authorize_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+        token_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+        userdata_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
+        # authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
+        # token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
+        # userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
         # logout_redirect_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com/
         login_service: keycloak
         username_claim: preferred_username
         userdata_params:
           state: state
         allow_all: False
-        allowed_groups: ["jhub_user"]
+        allowed_groups: ["earthscope_user"]
         auto_login: True
         enable_auth_state: True
-        admin_users: [ "yutian.qin@utah.edu" ]
+        admin_users: ["yutian.qin@utah.edu", "saleem.alharir@utah.edu"]
         scope:
           - openid
       JupyterHub:
@@ -54,6 +57,7 @@ jupyterhub:
         memory: 512Mi
     networkPolicy:
       enabled: false
+    # Extra Configurations
     extraConfig:
 
       default.py: |
@@ -91,11 +95,16 @@ jupyterhub:
             return client_id_splitted, client_secret_splitted
         
         NAMESPACE = 'jupyterhub'
-        # TODO: need to fix the secret retrieval
         # CLIENT_ID, CLIENT_SECRET = use_k8s_secret(namespace=NAMESPACE, secret_name='jupyterhub-secret')
-        CLIENT_ID = 'jhub-k8s'
-        CLIENT_SECRET = 'zxWTNorm4SKBZPZKrfvjBvTUglVhENP4'
-        KEYCLOAK_URL = "https://idp-test.nationaldataplatform.org"
+        
+        # CLIENT_ID = 'saleem_test'
+        # CLIENT_SECRET = 'rsaX0OCRk6MXVoz3mqYAbyeRXHkmcC'
+        CLIENT_ID = 'ndp_endpoint_jhub'
+        CLIENT_SECRET = '6VHPSu4AxON2bj7CWJc9oZq1U0Ih72az'
+        KEYCLOAK_URL = 'https://idp.nationaldataplatform.org'
+        # CLIENT_ID = 'jhub-k8s'
+        # CLIENT_SECRET = 'zxWTNorm4SKBZPZKrfvjBvTUglVhENP4'
+        # KEYCLOAK_URL = "https://idp-test.nationaldataplatform.org"
         NDP_EXT_VERSION = '0.0.12'
         
         USER_PERSISTENT_STORAGE_FOLDER = "_User-Persistent-Storage"
@@ -128,86 +137,86 @@ jupyterhub:
                 'default': False,
                 'slug': "1",
             },
-            {
-                'display_name': "NDP Catalog Search",
-                'default': False,
-                'slug': "10",
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:catalog_search_v0.9',
-                }
-            },
-            {
-                'display_name': "Physics Guided Machine Learning Starter Code ",
-                'slug': "2",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:pgml_v0.1.7.3',
-                }
-            },
-            {
-                'display_name': "SAGE Pilot Streaming Data Starter Code",
-                'slug': "3",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:sage_v0.2.1.6',
-                }
-            },
-            {
-                'display_name': "EarthScope Consortium Streaming Data Starter Code",
-                'slug': "4",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:earthscope_v0.2.4.3',
-                }
-            },
-            {
-                'display_name': "NAIRR Pilot - NASA Harmonized Landsat Sentinel-2 (HLS) Starter Code",
-                'slug': "5",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:nair_v0.0.0.17',
-                }
-            },
-            {
-                'display_name': "LLM Training (CUDA 12.3, tested with 1 GPU, 12 cores, 64GB RAM, NVIDIA A100-80GB)",
-                'slug': "6",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:llm_v0.0.0.16_big',
-                }
-            },
-            {
-                'display_name': "LLM Service Client (Minimal, No CUDA)",
-                'slug': "7",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:llm_v0.0.0.14_small',
-                }
-            },
-            {
-                'display_name': "TLS Fuel-Size Segmentation 2023",
-                'slug': "8",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:tls_class_0.0.0.5',
-                }
-            },
-            {
-                'display_name': "NOAA-GOES Analysis",
-                'slug': "9",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:noaa_goes_v0.0.0.3',
-                }
-            },
-            {
-                'display_name': "NOAA-SAGE-EARTHSCOPE Starter Codes",
-                'slug': "10",
-                'default': False,
-                'kubespawner_override': {
-                    'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:utah_demos_0.0.0.1',
-                }
-            },
+            # {
+            #     'display_name': "NDP Catalog Search",
+            #     'default': False,
+            #     'slug': "10",
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:catalog_search_v0.9',
+            #     }
+            # },
+            # {
+            #     'display_name': "Physics Guided Machine Learning Starter Code ",
+            #     'slug': "2",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:pgml_v0.1.7.3',
+            #     }
+            # },
+            # {
+            #     'display_name': "SAGE Pilot Streaming Data Starter Code",
+            #     'slug': "3",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:sage_v0.2.1.6',
+            #     }
+            # },
+            # {
+            #     'display_name': "EarthScope Consortium Streaming Data Starter Code",
+            #     'slug': "4",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:earthscope_v0.2.4.3',
+            #     }
+            # },
+            # {
+            #     'display_name': "NAIRR Pilot - NASA Harmonized Landsat Sentinel-2 (HLS) Starter Code",
+            #     'slug': "5",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:nair_v0.0.0.17',
+            #     }
+            # },
+            # {
+            #     'display_name': "LLM Training (CUDA 12.3, tested with 1 GPU, 12 cores, 64GB RAM, NVIDIA A100-80GB)",
+            #     'slug': "6",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:llm_v0.0.0.16_big',
+            #     }
+            # },
+            # {
+            #     'display_name': "LLM Service Client (Minimal, No CUDA)",
+            #     'slug': "7",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:llm_v0.0.0.14_small',
+            #     }
+            # },
+            # {
+            #     'display_name': "TLS Fuel-Size Segmentation 2023",
+            #     'slug': "8",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:tls_class_0.0.0.5',
+            #     }
+            # },
+            # {
+            #     'display_name': "NOAA-GOES Analysis",
+            #     'slug': "9",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:noaa_goes_v0.0.0.3',
+            #     }
+            # },
+            # {
+            #     'display_name': "NOAA-SAGE-EARTHSCOPE Starter Codes",
+            #     'slug': "10",
+            #     'default': False,
+            #     'kubespawner_override': {
+            #         'image': 'gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn:utah_demos_0.0.0.1',
+            #     }
+            # },
         ]
         
         class MySpawner(KubeSpawner):
@@ -682,6 +691,7 @@ jupyterhub:
             except:
                 pass
         
+        # c.JupyterHub.base_url = '/jupyterhub'
         c.JupyterHub.template_paths = ['/etc/jupyterhub/custom']
         c.JupyterHub.spawner_class = MySpawner
         c.JupyterHub.allow_named_servers = False
@@ -760,7 +770,7 @@ jupyterhub:
           name: volume-{username}
     storage:
       extraLabels: {}
-      capacity: 10Gi
+      capacity: 1Gi
       homeMountPath: /home/jovyan/work/_User-Persistent-Storage
       dynamic:
         storageClass: ebs-sc
@@ -773,11 +783,11 @@ jupyterhub:
     #   tag: minimal_0.0.10
     startTimeout: 1200
     cpu:
-      limit: 1
+      limit: 2
       guarantee: 1
     memory:
-      limit: 3G
-      guarantee: 3G
+      limit: 4G
+      guarantee: 4G
     extraResource:
       limits: {}
       guarantees: {}
@@ -798,10 +808,20 @@ jupyterhub:
 
   ingress:
     enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
+    ingressClassName: nginx
     hosts: []
     tls: []
+  
+  # ingress:
+  #   enabled: true
+  #   # annotations:
+  #   #   kubernetes.io/ingress.class: nginx
+  #   ingressClassName: nginx
+  #   hosts: ["a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com"]
+  #   pathSuffix: 'jupyterhub'
+  #   tls:
+  #     - hosts:
+  #       - a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com
 
   cull:
     enabled: true

@@ -10,20 +10,39 @@ NAMESPACE := jupyterhub
 VALUES_FILE := config.yaml
 # VALUES_FILE := config_diy.yaml
 
-# Generate the values file by embedding spawner.py into values.yaml
+# Updates Helm chart dependencies by downloading them into the charts/ directory
+.PHONY: update-dependency
+update-dependency:
+	helm dependency update
+
+# Create a kubernetes secret for keycloak client_id and client_secret
+.PHONY: create-jupyterhub-secret
+create-jupyterhub-secret:
+	@echo "Creating JupyterHub secret in namespace $(NAMESPACE)..."
+	kubectl create secret generic jupyterhub-secret \
+		--from-file=values.yaml=jupyterhub_secret.yaml \
+		--namespace $(NAMESPACE)
+
+# Delete the kubernetes secret for keycloak client_id and client_secret
+.PHONY: delete-jupyterhub-secret
+delete-jupyterhub-secret:
+	@echo "Deleting JupyterHub secret in namespace $(NAMESPACE)..."
+	kubectl delete secret jupyterhub-secret --namespace $(NAMESPACE) || true
+
+# Generate the config.yaml file by embedding spawner.py into values.yaml
 .PHONY: generate
 generate:
 	@echo "Generating $(VALUES_FILE)..."
 	python generate_config.py
 
-# Updates Helm chart dependencies by downloading them into the charts/ directory
-.PHONY: update-deps
-update-deps:
-	helm dependency update
+# Clean up generated config.yaml files
+.PHONY: clean
+clean:
+	@echo "Cleaning up generated files..."
+	rm -f $(VALUES_FILE)
 
 # Deploy the Helm chart
 .PHONY: deploy
-# deploy: generate
 deploy:
 	@echo "Deploying $(HELM_RELEASE) to $(NAMESPACE)..."
 	helm upgrade --cleanup-on-fail \
@@ -53,9 +72,3 @@ status:
 get-ingress:
 	@echo "Fetching Ingress details for $(HELM_RELEASE) ..."
 	@kubectl get ingress -n $(NAMESPACE) -o wide
-
-# Clean up generated files
-.PHONY: clean
-clean:
-	@echo "Cleaning up generated files..."
-	rm -f $(VALUES_FILE)
