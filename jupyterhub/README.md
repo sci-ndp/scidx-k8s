@@ -17,3 +17,22 @@ Result secret will look like this:
   data:
     values.yaml: <base64-encoded contents of jupyterhub_secret.yaml>
 ```
+
+
+## Prerequisites
+Ensure you have `kubectl` and `helm` installed and configured to interact with your Kubernetes cluster.
+
+## Additional Resources
+
+For more information on `kubectl` and `helm`, refer to the following resources:
+
+- [kubectl Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+
+## Installation
+1. **Make Shell Scripts Executable**
+
+    Run the following command to make all the shell scripts executable:
+    ```bash
+    chmod +x *.sh
+    ```
