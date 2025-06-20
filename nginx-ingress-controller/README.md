@@ -1,18 +1,19 @@
-# Documentation: NGINX Ingress Controller Installation and Deletion Guide
+# NGINX Ingress Controller Installation Guide Documentation
 
 This guide provides step-by-step instructions for installing and deleting the NGINX Ingress Controller on an EKS cluster or a MicroK8s cluster using shell scripts. For more detailed information, refer to the [NGINX Ingress Controller documentation](https://kubernetes.github.io/ingress-nginx/).
+
 
 ## Prerequisites
 Ensure you have `kubectl` and `helm` installed and configured to interact with your Kubernetes cluster.
 
+
 ## Additional Resources
-
 For more information on `kubectl` and `helm`, refer to the following resources:
-
 - [kubectl Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 - [Helm Installation Guide](https://helm.sh/docs/intro/install/)
 - [Helm Documentation](https://helm.sh/docs/intro/using_helm/)
+
 
 ## Installation
 

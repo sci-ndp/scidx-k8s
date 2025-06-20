@@ -1,20 +1,19 @@
-# sciDX Kubernetes Resource
+# SciDX Kubernetes Resources
 
-This repository contains Kubernetes manifests and supporting files for deploying and managing scidx services stack within a Kubernetes cluster.
+This repository provides Kubernetes manifests and supporting files for deploying and managing the SciDX services stack.
 
-## Basic Set up
+## Deployment
 
-1. **Install the Ingress Controller**:
+Follow these steps to deploy SciDX software stack on Kubernetes cluster:
 
-    Navigate to the [`./nginx-ingress-controller`](./nginx-ingress-controller/) directory and follow the instructions to install the NGINX Ingress Controller in your cluster.
+1. [**Install the NGINX Ingress Controller**](./nginx-ingress-controller/)
 
-    > If you are using a MicroK8s cluster and have a DNS name for which you want HTTPS support with the NGINX Ingress Controller, refer to the [`./ssl-cert_microk8s`](./ssl-cert_microk8s/) directory for guidance.
+2. [**Deploy Kafka Cluster**](./streaming/)
 
-2.  **Data Streaming Setup**: deploy Kafka cluster into your cluster
+3. [**Deploy JupyterHub**](./jupyterhub/)
 
-    Navigate to [`./apache-kafka`](./apache-kafka) and follow the provided instructions to deploy Kafka cluster into your cluster
+4. [**Deploy NDP Endpoint API**](./ndp-endpoint/)
 
-3. **Deploy `NDP Endpoint(pointofpresence) API`**:
+> **Tip:** Complete each step in order for a smooth deployment experience.
 
-    Once the ingress controller is installed, navigate to either the [`./pointofpresense`](./pointofpresense) directory and follow the deployment instructions to deploy the respective applications.
-
+> For MicroK8s clusters needing HTTPS and DNS, see [**`ssl-cert_microk8s`**](./ssl-cert_microk8s/).

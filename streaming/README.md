@@ -44,12 +44,12 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     helm repo update
 
     helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
-    --namespace ingress-nginx --create-namespace \
-    --set controller.service.type=LoadBalancer \
-    --set tcp.31090="kafka/my-kafka-kafka-0:9094" \
-    --set tcp.31091="kafka/my-kafka-kafka-1:9094" \
-    --set tcp.31092="kafka/my-kafka-kafka-2:9094" \
-    --set tcp.31093="kafka/my-kafka-kafka-3:9094"
+        --namespace ingress-nginx --create-namespace \
+        --set controller.service.type=LoadBalancer \
+        --set tcp.31090="kafka/my-kafka-kafka-0:9094" \
+        --set tcp.31091="kafka/my-kafka-kafka-1:9094" \
+        --set tcp.31092="kafka/my-kafka-kafka-2:9094" \
+        --set tcp.31093="kafka/my-kafka-kafka-3:9094"
     ```
     Each TCP rule maps an external port to a specific Kafka broker inside the cluster.  
     NGINX listens on ports `31090–31093` and forwards them to Kafka pods on `9094`.

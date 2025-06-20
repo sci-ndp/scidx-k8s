@@ -3,6 +3,7 @@
 This guide provides step-by-step instructions for installing and deleting the Strimzi Operator on a MicroK8s cluster using shell scripts.
 
 ## Prerequisites
+
 Ensure you have `kubectl` and `helm` installed and configured to interact with your Kubernetes cluster.
 
 ## Additional Resources
@@ -13,21 +14,25 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 - [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 
 ## Installation
+
 1. **Make Shell Scripts Executable**
 
     Run the following command to make all the shell scripts executable:
+
     ```bash
     chmod +x *.sh
     ```
+
 2. **Configuring Environment Variables**
-      
+
     Copy the template to create your Secret file:
+
     ```bash
     ./copy-secret.sh
     ```
-      
-3. **Edit the values in `stringData` in `pop-env-secret.yaml`(created by pop-env-secret.yaml) to match your environment.**
-    
+
+3. **Edit the values in `stringData` in `pop-env-secret.yaml` to match your environment.**
+
     If you have deployed Kafka, configure the Kafka connection settings by specifying the external IP of the NGINX ingress controller as `KAFKA_HOST` and choose one of the following ports: `31090`, `31091`, `31092`, or `31093` for `KAFKA_PORT`.
 
     ```yaml
@@ -35,11 +40,13 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     KAFKA_HOST: ""              # Enter the Kafka broker's hostname or IP address
     KAFKA_PORT: ""              # Enter the Kafka broker's port number
     ```
-4. **Configure ingress**: 
-    
+
+4. **Configure ingress**:
+
     Option 1: Use a DNS name with HTTPS
 
     If you have configured a DNS name with HTTPS support for the NGINX ingress controller, update the host in the  file. By default, it is set to vdc-190.chpc.utah.edu. Modify the spec.tls.hosts and spec.rules.host fields to match your domain, for example:
+
     ```yaml
     spec:
         ingressClassName: nginx
@@ -78,7 +85,8 @@ For more information on `kubectl` and `helm`, refer to the following resources:
                         port:
                         number: 8001
     ```
-    >To use this file, replace the default pop-ingress.yaml with template-ingress.yaml. First, back up or remove the existing pop-ingress.yaml, then rename template-ingress.yaml to pop-ingress.yaml so it is applied by the deployment script:
+
+    > To use this file, replace the default pop-ingress.yaml with template-ingress.yaml. First, back up or remove the existing pop-ingress.yaml, then rename template-ingress.yaml to pop-ingress.yaml so it is applied by the deployment script:
 
     ```bash
     # Back up the default pop-ingress.yaml (optional)
@@ -91,9 +99,11 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 ### Deploy NDP Endpoint (formerly POP)
 
 1. Apply all the other manifests with 'pop' prefix
+
     ```bash
     ./apply.sh
     ```
+
    The `apply.sh` script will:
 
     * Apply the namespace (`pop-namespace.yaml`).
