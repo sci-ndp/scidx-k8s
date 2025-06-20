@@ -1,11 +1,13 @@
 # Kafka Kubernetes Deployment Documentation
 
 This guide provides instruction for deploying Strimzi Kafka with TCP Ingress, which walks through:
+
 1. Enabled TCP passthrough for Kafka via **NGINX Ingress Controller**
 2. Applied a 4-broker **Strimzi Kafka cluster**
-3. Verified the setup using `kcat` over NGINX 
+3. Verified the setup using `kcat` over NGINX
 
 ## Prerequisites
+
 Ensure you have `kubectl` and `helm` installed and configured to interact with your Kubernetes cluster.
 
 ## Additional Resources
@@ -22,13 +24,15 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 1. **Make Shell Scripts Executable**
 
     Run the following command to make all the shell scripts executable:
+
     ```bash
     chmod +x *.sh
     ```
 
 2. **Install the Strimzi Operator**
 
-    Execute the [`./strimzi-operator/install-strimzi-operator.sh`](./strimzi-operator/install-strimzi-operator.sh) script to deploy the Strimzi Kafka Operator into the `kafka` namespace. The operator will watch for Kafka-related Custom Resources (CRs) and manage the cluster. https://strimzi.io/docs/operators/latest/deploying#assembly-operators-str
+    Execute the [`./strimzi-operator/helm/install.sh`](./strimzi-operator/helm/install.sh) script to deploy the Strimzi Kafka Operator into the `kafka` namespace. The operator will watch for Kafka-related Custom Resources (CRs) and manage the cluster. [Strimzi Operator Deployment Documentation](https://strimzi.io/docs/operators/latest/deploying#assembly-operators-str)
+
     ```bash
     cd strimzi-operator
     chmod +x *.sh
