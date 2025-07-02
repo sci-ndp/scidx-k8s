@@ -1,6 +1,3 @@
-# Notes:
-# Install from ./helm folder: helm upgrade --cleanup-on-fail --install ndp-hub ndp-hub --kube-context nautilus --namespace ndp --values ndp-hub/values_prod.yaml
-# Uninstall: helm uninstall ndp-hub --kube-context nautilus --namespace ndp
 
 jupyterhub:
   hub:
@@ -12,15 +9,11 @@ jupyterhub:
     existingSecret: jupyterhub-secret # Passing keycloak client_id and client_secret into hub server
     config:
       GenericOAuthenticator:
-        oauth_callback_url: http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com/hub/oauth_callback
+        oauth_callback_url: http://a4833e78600424b888132ece5a38d586-244848997.us-west-2.elb.amazonaws.com/hub/oauth_callback # change me
         authorize_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
         token_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
         userdata_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
-        # authorize_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/auth
-        # token_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/token
-        # userdata_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/userinfo
-        # logout_redirect_url: https://idp-test.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=http://a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com/
-        login_service: keycloak
+        # logout_redirect_url: https://idp.nationaldataplatform.org/realms/NDP/protocol/openid-connect/logout?redirect_uri=http://a4833e78600424b888132ece5a38d586-244848997.us-west-2.elb.amazonaws.com
         username_claim: preferred_username
         userdata_params:
           state: state
@@ -47,7 +40,7 @@ jupyterhub:
         accessModes:
           - ReadWriteOnce
         storage: 10Gi
-        storageClassName: ebs-sc
+        storageClassName: gp2 # change me
     resources:
       limits:
         cpu: "2"
@@ -99,14 +92,11 @@ jupyterhub:
       capacity: 1Gi
       homeMountPath: /home/jovyan/work/_User-Persistent-Storage
       dynamic:
-        storageClass: ebs-sc
+        storageClass: gp2 # change me
         pvcNameTemplate: claim-{username}
         volumeNameTemplate: volume-{username}
         storageAccessModes: [ReadWriteOnce]
 
-    # image:
-    #   name: gitlab-registry.nrp-nautilus.io/ndp/ndp-docker-images/jhub-spawn
-    #   tag: minimal_0.0.10
     startTimeout: 1200
     cpu:
       limit: 2
@@ -137,17 +127,6 @@ jupyterhub:
     ingressClassName: nginx
     hosts: []
     tls: []
-  
-  # ingress:
-  #   enabled: true
-  #   # annotations:
-  #   #   kubernetes.io/ingress.class: nginx
-  #   ingressClassName: nginx
-  #   hosts: ["a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com"]
-  #   pathSuffix: 'jupyterhub'
-  #   tls:
-  #     - hosts:
-  #       - a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com
 
   cull:
     enabled: true

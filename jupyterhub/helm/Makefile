@@ -8,16 +8,21 @@ HELM_CHART := . # Path to the Helm chart(./charts)
 KUBE_CONTEXT := arn:aws:eks:us-west-2:515966508187:cluster/scidx # Kubernetes cluster context
 NAMESPACE := jupyterhub
 VALUES_FILE := config.yaml
-# VALUES_FILE := config_diy.yaml
 
 # Updates Helm chart dependencies by downloading them into the charts/ directory
 .PHONY: update-dependency
 update-dependency:
 	helm dependency update
 
+# Create namespace if it does not exist
+.PHONY: create-namespace
+create-namespace:
+	@echo "Creating namespace $(NAMESPACE) if it does not exist..."
+	kubectl get namespace $(NAMESPACE) >/dev/null 2>&1 || kubectl create namespace $(NAMESPACE)
+
 # Create a kubernetes secret for keycloak client_id and client_secret
-.PHONY: create-jupyterhub-secret
-create-jupyterhub-secret:
+.PHONY: create-jhub-secret
+create-jhub-secret: create-namespace
 	@echo "Creating JupyterHub secret in namespace $(NAMESPACE)..."
 	kubectl create secret generic jupyterhub-secret \
 		--from-file=values.yaml=jupyterhub_secret.yaml \

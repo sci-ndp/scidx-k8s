@@ -15,20 +15,29 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 - [Helm Installation Guide](https://helm.sh/docs/intro/install/)
 - [Helm Documentation](https://helm.sh/docs/intro/using_helm/)
 
-## Creating the JupyterHub Secret
-
-To provide Keycloak client credentials to JupyterHub, in [`./helm/jupyterhub_secret.yaml`](./helm/jupyterhub_secret.yaml), insert the `client_id` and `client_secret` values obtained from NDP admins
-
-
 ## Deploying NDP JupyterHub on Kubernetes Cluster
 
 There is a Makefile provided to simplify the deployment and management of JupyterHub on your Kubernetes cluster using Helm.
 
 ### Deployment Prerequisites
 
-Ensure that jupyterhub_secret.yaml  contains the correct Keycloak client credentials.
+Ensure that `./helm/jupyterhub_secret.yaml` contains the correct Keycloak client credentials by setting the `client_id` and `client_secret` fields with values provided by your NDP administrators.
 
-### Common Tasks
+#### Creating the JupyterHub Secret
+
+1. **Edit Credentials:**  
+   Open [`./helm/jupyterhub_secret.yaml`](./helm/jupyterhub_secret.yaml) and fill in the `client_id` and `client_secret` fields with the appropriate values.
+
+2. **Create the Kubernetes Secret:**  
+   Apply the secret to your cluster by running:
+
+   ```bash
+   make create-jhub-secret
+   ```
+
+This command will create a Kubernetes secret containing your Keycloak credentials, which JupyterHub will use for authentication.
+
+### Deployment Process
 
 1. **Update Helm Chart Dependencies:** Fetch and update Helm chart dependencies listed in `Chart.yaml`.
 
@@ -42,40 +51,36 @@ Ensure that jupyterhub_secret.yaml  contains the correct Keycloak client credent
    make generate
    ```
 
-3. **Create JupyterHub Secret:** Store Keycloak client credentials as a Kubernetes secret:
-
-   ```bash
-   make create-jupyterhub-secret
-   ```
-
-4. **Deploy JupyterHub**
+3. **Deploy JupyterHub**
    Deploy or upgrade JupyterHub using Helm:
 
    ```bash
    make deploy
    ```
 
-5. **Check Deployment Status**
+### Verify and Cleanup
+
+1. **Check Deployment Status**
 
    ```bash
    make status
    ```
 
-6. **Get Ingress Details**
+2. **Get Ingress Details**
    Retrieve the Ingress IP or hostname for accessing JupyterHub:
 
    ```bash
    make get-ingress
    ```
 
-7. **Uninstall JupyterHub**
+3. **Uninstall JupyterHub**
    Remove the JupyterHub deployment:
 
    ```bash
    make uninstall
    ```
 
-8. **Clean Up Generated config.yaml File**
+4. **Clean Up Generated config.yaml File**
 
    ```bash
    make clean
@@ -89,6 +94,7 @@ Ensure that jupyterhub_secret.yaml  contains the correct Keycloak client credent
 ## JupyterHub Secret Explaination
 
 By executing `make create-jupyterhub-secret`, you basically run:
+
 ```sh
 kubectl create secret generic jupyterhub-secret \
   --from-file=values.yaml=jupyterhub_secret.yaml \

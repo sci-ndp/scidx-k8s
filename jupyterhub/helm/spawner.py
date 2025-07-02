@@ -33,15 +33,10 @@ def use_k8s_secret(namespace, secret_name):
 
 NAMESPACE = 'jupyterhub'
 # CLIENT_ID, CLIENT_SECRET = use_k8s_secret(namespace=NAMESPACE, secret_name='jupyterhub-secret')
-
-# CLIENT_ID = 'saleem_test'
-# CLIENT_SECRET = 'rsaX0OCRk6MXVoz3mqYAbyeRXHkmcC'
 CLIENT_ID = 'ndp_endpoint_jhub'
 CLIENT_SECRET = '6VHPSu4AxON2bj7CWJc9oZq1U0Ih72az'
 KEYCLOAK_URL = 'https://idp.nationaldataplatform.org'
-# CLIENT_ID = 'jhub-k8s'
-# CLIENT_SECRET = 'zxWTNorm4SKBZPZKrfvjBvTUglVhENP4'
-# KEYCLOAK_URL = "https://idp-test.nationaldataplatform.org"
+
 NDP_EXT_VERSION = '0.0.12'
 
 USER_PERSISTENT_STORAGE_FOLDER = "_User-Persistent-Storage"
