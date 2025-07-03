@@ -124,7 +124,7 @@ jupyterhub:
 
   ingress:
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: nginx # change me
     hosts: []
     tls: []
 
