@@ -15,16 +15,16 @@ spec:
         configuration:
           brokers:
             - broker: 0
-              advertisedHost: a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com
+              advertisedHost: a4833e78600424b888132ece5a38d586-244848997.us-west-2.elb.amazonaws.com
               nodePort: 31090
             - broker: 1
-              advertisedHost: a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com
+              advertisedHost: a4833e78600424b888132ece5a38d586-244848997.us-west-2.elb.amazonaws.com
               nodePort: 31091
             - broker: 2
-              advertisedHost: a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com
+              advertisedHost: a4833e78600424b888132ece5a38d586-244848997.us-west-2.elb.amazonaws.com
               nodePort: 31092
             - broker: 3
-              advertisedHost: a5cb89cbcb5f744278db39cc4b652939-465723067.us-west-2.elb.amazonaws.com
+              advertisedHost: a4833e78600424b888132ece5a38d586-244848997.us-west-2.elb.amazonaws.com
               nodePort: 31093
     storage:
       type: ephemeral
