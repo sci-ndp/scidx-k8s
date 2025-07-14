@@ -21,12 +21,12 @@ There is a Makefile provided to simplify the deployment and management of Jupyte
 
 ### Deployment Prerequisites
 
-Ensure that `./helm/jupyterhub_secret.yaml` contains the correct Keycloak client credentials by setting the `client_id` and `client_secret` fields with values provided by your NDP administrators.
+Ensure that `./ndp-hub/jupyterhub_secret.yaml` contains the correct Keycloak client credentials by setting the `client_id` and `client_secret` fields with values provided by your NDP administrators.
 
 #### Creating the JupyterHub Secret
 
 1. **Edit Credentials:**  
-   Open [`./helm/jupyterhub_secret.yaml`](./helm/jupyterhub_secret.yaml) and fill in the `client_id` and `client_secret` fields with the appropriate values.
+   Open [`./ndp-hub/jupyterhub_secret.yaml`](./ndp-hub/jupyterhub_secret.yaml) and fill in the `client_id` and `client_secret` fields with the appropriate values.
 
 2. **Create the Kubernetes Secret:**  
    Apply the secret to your cluster by running:
