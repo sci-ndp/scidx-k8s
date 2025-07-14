@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Apply namespace first
+# Apply 'pop' namespace
+# ----------------------------------------------------
 echo "Applying namespace from pop-namespace.yaml..."
 kubectl apply -f pop-namespace.yaml
 
@@ -11,7 +12,9 @@ while ! kubectl get namespace pop > /dev/null 2>&1; do
 done
 echo "Namespace 'pop' is ready"
 
-# Apply the pop-env-secret.yaml next
+
+# Apply the 'pop-env-secret' secret
+# ----------------------------------------------------
 echo "Applying pop-env-secret.yaml..."
 if [ -f "pop-env-secret.yaml" ]; then
   kubectl apply -f pop-env-secret.yaml
@@ -21,8 +24,8 @@ else
 fi
 
 # Apply all other files in the current directory that start with 'pop'
-# (e.g., pop-deployment.yaml, pop-service.yaml, pop-ingress.yaml)
 # Exclude pop-namespace.yaml and pop-env-secret.yaml to avoid re-applying
+# ----------------------------------------------------
 echo "Applying remaining manifests (pop-deployment.yaml, pop-service.yaml, pop-ingress.yaml, etc.)..."
 for file in pop*.yaml; do
   if [ "$file" != "pop-namespace.yaml" ] && [ "$file" != "pop-env-secret.yaml" ]; then

@@ -13,7 +13,7 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 - [kubectl Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
 
-## Installation
+## Configuration
 
 1. **Make Shell Scripts Executable**
 
@@ -28,12 +28,12 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     Copy the template to create your Secret file:
 
     ```bash
-    ./copy-secret.sh
+    cp secret-template.yaml pop-env-secret.yaml
     ```
 
-3. **Edit the values in `stringData` in `pop-env-secret.yaml` to match your environment.**
+3. **Edit the values in `stringData` in pop-env-secret.yaml to match your environment.**
 
-    If you have deployed Kafka, configure the Kafka connection settings by specifying the external IP of the NGINX ingress controller as `KAFKA_HOST` and choose one of the following ports: `31090`, `31091`, `31092`, or `31093` for `KAFKA_PORT`.
+    If you have deployed Kafka Cluster, configure the Kafka connection settings by specifying the external IP of the NGINX ingress controller as KAFKA_HOST and choose one of the following ports: `31090`, `31091`, `31092`, or `31093` for KAFKA_PORT.
 
     ```yaml
     KAFKA_CONNECTION: "True"    # Set to "True" to enable Kafka connectivity
@@ -42,70 +42,55 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     ```
 
 4. **Configure ingress**:
+    
+    If no DNS name is configured for the Nginx ingress controller, skip this step. 
+    
+    > By default, we apply the already defined pop-ingress.yaml. This file provides a basic ingress configuration without a specific host
 
-    Option 1: Use a DNS name with HTTPS
+    Optional: 
 
-    If you have configured a DNS name with HTTPS support for the NGINX ingress controller, update the host in the  file. By default, it is set to vdc-190.chpc.utah.edu. Modify the spec.tls.hosts and spec.rules.host fields to match your domain, for example:
-
-    ```yaml
-    spec:
-        ingressClassName: nginx
-        tls:
-            - hosts:
-                - your-domain.example.com
-            secretName: pop-api-tls
-        rules:
-            - host: your-domain.example.com
-            http:
-                paths:
-                - path: /pop(/|$)(.*)
-                    pathType: ImplementationSpecific
-                    backend:
-                    service:
-                        name: pop-api-service
-                        port:
-                        number: 8003
-    ```
-
-    Option 2: No DNS name configured
-
-    If you do not have a DNS name configured for the ingress controller, use the  file instead. This file provides a basic ingress configuration without a specific host:
+    If you have configured a DNS name with HTTPS support for the Nginx ingress controller, update pop-ingress.yaml accordingly. Here is an example:
 
     ```yaml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+    name: pop-ingress
+    namespace: pop
+    annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
     spec:
-        ingressClassName: nginx
-        rules:
-            - http:
-                paths:
-                - path: /pop(/|$)(.*)
-                    pathType: ImplementationSpecific
-                    backend:
-                    service:
-                        name: pop-api-service
-                        port:
-                        number: 8001
+    ingressClassName: nginx
+    tls:
+        - hosts:
+            - vdc-190.chpc.utah.edu
+        secretName: pop-api-tls
+    rules:
+        - host: vdc-190.chpc.utah.edu
+        http:
+            paths:
+            - path: /pop(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+                service:
+                name: pop-api-service
+                port:
+                    number: 8003
     ```
 
-    > To use this file, replace the default pop-ingress.yaml with template-ingress.yaml. First, back up or remove the existing pop-ingress.yaml, then rename template-ingress.yaml to pop-ingress.yaml so it is applied by the deployment script:
+## Deploy NDP Endpoint
 
-    ```bash
-    # Back up the default pop-ingress.yaml (optional)
-    mv pop-ingress.yaml pop-ingress.yaml.bak
+To deploy all required resources, run the following script:
 
-    # Rename template-ingress.yaml to pop-ingress.yaml
-    mv template-ingress.yaml pop-ingress.yaml
-    ```
+```bash
+./apply.sh
+```
 
-### Deploy NDP Endpoint (formerly POP)
+The apply.sh script will:
+- Apply the `pop-namespace.yaml` to create the namespace.
+- Wait for the `pop` namespace to be ready.
+- Apply `pop-env-secret.yaml` (script exits with an error if missing).
+- Apply all other `pop-*.yaml` manifests except the namespace and secret files.
 
-1. Apply all the other manifests with 'pop' prefix
-
-    ```bash
-    ./apply.sh
-    ```
-
-   The `apply.sh` script will:
-
-    * Apply the namespace (`pop-namespace.yaml`).
-    * Apply the environment secrets (`pop-env-secret.yaml`).
-    * Apply all other manifests with the pop prefix, including `pop-ingress.yaml`, `pop-deployment.yaml`, `pop-service.yaml`, etc.
+You will see progress messages for each step. When the script completes, all manifests will be applied to your cluster.
