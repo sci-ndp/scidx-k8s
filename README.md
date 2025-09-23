@@ -10,7 +10,7 @@ Follow these steps to deploy SciDX software stack on Kubernetes cluster:
 
 2. [**Deploy Kafka Cluster**](./streaming/)
 
-3. [**Deploy JupyterHub**](./jupyterhub/)
+3. [**Deploy JupyterHub**](./jhub-helm/)
 
 4. [**Deploy NDP Endpoint API**](./ndp-endpoint/)
 
