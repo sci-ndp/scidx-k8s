@@ -1,0 +1,4 @@
+[submodule "ckan-helm"]
+	path = ckan-helm
+	url = git@github.com:sci-ndp/ckan-helm.git
+	branch = master
