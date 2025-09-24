@@ -31,17 +31,22 @@ For more information on `kubectl` and `helm`, refer to the following resources:
 
 2. **Install the Strimzi Operator**
 
-    Execute the [`./strimzi-operator/helm/install.sh`](./strimzi-operator/helm/install.sh) script to deploy the Strimzi Kafka Operator into the `kafka` namespace. The operator will watch for Kafka-related Custom Resources (CRs) and manage the cluster. [Strimzi Operator Deployment Documentation](https://strimzi.io/docs/operators/latest/deploying#assembly-operators-str)
+    The Strimzi Helm workflow lives in [`./strimzi-operator/Makefile`](./strimzi-operator/Makefile). Run the following from the `strimzi-operator` directory to add the Helm repo (idempotent), create the namespace if needed, and install or upgrade the release:
 
     ```bash
     cd strimzi-operator
-    chmod +x *.sh
-    ./install-strimzi-operator.sh
+    make install
     ```
+
+    `make install` automatically performs `helm repo add`, `helm repo update`, and scopes the operator to the `kafka` namespace via `--set watchNamespaces={kafka}`. 
+    
+    `make status` inspect the release
+    
+    `make uninstall` to remove it when you're done experimenting.
     
 3. **Upgrade NGINX Ingress Controller with TCP Support**
     
-    We installed the ingress controller using Helm and specified TCP passthrough settings:
+    **Helm-managed ingress:**
 
     ```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -55,16 +60,22 @@ For more information on `kubectl` and `helm`, refer to the following resources:
         --set tcp.31092="kafka/my-kafka-kafka-2:9094" \
         --set tcp.31093="kafka/my-kafka-kafka-3:9094"
     ```
-    Each TCP rule maps an external port to a specific Kafka broker inside the cluster.  
-    NGINX listens on ports `31090–31093` and forwards them to Kafka pods on `9094`.
+
+    **MicroK8s ingress add-on:** If the ingress controller was installed with `microk8s enable ingress`, apply the TCP passthrough ConfigMap instead of relying on Helm values:
+
+    ```bash
+    ./tcp-passthrough.sh
+    ```
+
+    Each TCP rule maps an external port to a specific Kafka broker inside the cluster. NGINX listens on ports `31090–31093` and forwards them to Kafka pods on `9094`.
 
 4. **Deploy a Kafka Cluster**
     
     Update each `listeners.configuration.brokers.broker.advertisedHost` to nginx ingress controller's hostname/external-ip in [`kafka-cluster.yaml`](./kafka-cluster.yaml)
-    
-    Run [`create-kafka-cluster.sh`](./create-kafka-cluster.sh) script to deploy the Kafka cluster by applying the [`kafka-cluster.yaml`](./kafka-cluster.yaml) configuration file to your Kubernetes cluster. This file is a Custom Resource (CR) used by the Strimzi Operator to define and manage the Kafka cluster.
+
+    Run [`install.sh`](./install.sh) script to deploy the Kafka cluster by applying the [`kafka-cluster.yaml`](./kafka-cluster.yaml) configuration file to your Kubernetes cluster. This file is a Custom Resource (CR) used by the Strimzi Operator to define and manage the Kafka cluster.
     ```bash
-    ./create-kafka-cluster.sh
+    ./install.sh
     ```
 
 5. **Verify the Kafka Cluster**
