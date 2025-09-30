@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: pop-api-service
-  namespace: pop
+  name: ndp-ep-api-service
+  namespace: ndp-ep
   labels:
-    app: pop-api
+    app: ndp-ep-api
 spec:
   selector:
-    app: pop-api
+    app: ndp-ep-api
   ports:
     - protocol: TCP
       port: 8003

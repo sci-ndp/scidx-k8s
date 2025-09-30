@@ -1,1 +1,1 @@
-kubectl delete namespace pop
+kubectl delete namespace ndp-ep

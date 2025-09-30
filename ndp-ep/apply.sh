@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Apply 'pop' namespace
+# Apply 'ndp-ep' namespace
 # ----------------------------------------------------
 echo "Applying namespace from pop-namespace.yaml..."
 kubectl apply -f pop-namespace.yaml
 
 # Wait until the namespace exists before proceeding
-echo "Waiting for namespace 'pop' to be available..."
-while ! kubectl get namespace pop > /dev/null 2>&1; do
+echo "Waiting for namespace 'ndp-ep' to be available..."
+while ! kubectl get namespace ndp-ep > /dev/null 2>&1; do
   sleep 1
 done
-echo "Namespace 'pop' is ready"
+echo "Namespace 'ndp-ep' is ready"
 
 
 # Apply the 'pop-env-secret' secret

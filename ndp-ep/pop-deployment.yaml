@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pop-api
-  namespace: pop
+  name: ndp-ep-api
+  namespace: ndp-ep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pop-api
+      app: ndp-ep-api
   template:
     metadata:
       labels:
-        app: pop-api
+        app: ndp-ep-api
     spec:
       containers:
-      - name: pop-api
-        image: yutianqin/pop-api:latest
+      - name: ndp-ep-api
+        image: rbardaji/ndp-ep-api:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
         envFrom:
         - secretRef:
-            name: pop-env-secret
+            name: ndp-ep-env-secret
         resources:
           limits:
             memory: "512Mi"

@@ -1,20 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: pop-api-ingress
-  namespace: pop
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: ndp-ep-api-ingress
+  namespace: ndp-ep
 spec:
-  ingressClassName: nginx
+  ingressClassName: public # change me
   rules:
-    - http:
+    - host: ndp-dev-202.chpc.utah.edu
+      http:
         paths:
-          - path: /pop(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /
+            pathType: Prefix
             backend:
               service:
-                name: pop-api-service
+                name: ndp-ep-api-service
                 port:
                   number: 8003
