@@ -1,0 +1,6 @@
+- op: replace
+  path: /spec/ingressClassName
+  value: public
+- op: replace
+  path: /spec/rules/0/host
+  value: ndp-dev-202.chpc.utah.edu

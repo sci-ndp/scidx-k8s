@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ndp-endpoint
+
+resources:
+  - ../../base
+  - namespace.yaml
+
+patches:
+  - target:
+      kind: Ingress
+      name: ndp-ep-api-ingress
+    path: ingress-patch.yaml
+
+secretGenerator:
+  - name: ndp-ep-env-secret
+    options: 
+      disableNameSuffixHash: true
+    envs:
+      - ndp-ep-env-secret.env

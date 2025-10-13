@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ndp-ep-api-ingress
+spec:
+  ingressClassName: placeholder-class # patched per overlay
+  rules:
+    - host: placeholder.example.com # patched per overlay
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ndp-ep-api-service
+                port:
+                  number: 8003
