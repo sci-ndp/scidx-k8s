@@ -28,7 +28,7 @@ For more information on `kubectl` and `helm`, refer to the following resources:
     Copy the template to create your Secret file:
 
     ```bash
-    cp secret-template.yaml pop-env-secret.yaml
+    cp pop-env-secret.yaml.template pop-env-secret.yaml
     ```
 
 3. **Edit the values in `stringData` in pop-env-secret.yaml to match your environment.**
