@@ -21,6 +21,8 @@ spec:
         envFrom:
         - secretRef:
             name: ndp-ep-env-secret
+        - configMapRef:
+            name: root-path-cm
         resources:
           limits:
             memory: "512Mi"

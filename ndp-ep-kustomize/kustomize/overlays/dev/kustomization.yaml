@@ -13,6 +13,27 @@ patches:
       name: ndp-ep-api-ingress
     path: ingress-patch.yaml
 
+images:
+  - name: rbardaji/ndp-ep-api
+    newTag: 0.3.0-alpha.3
+
+# define root path config map and use it to patch ingress path
+configMapGenerator:
+  - name: root-path-cm
+    literals:
+      - ROOT_PATH=/api/dev
+replacements:
+  - source:
+      kind: ConfigMap
+      name: root-path-cm
+      fieldPath: data.ROOT_PATH
+    targets:
+      - select:
+          kind: Ingress
+          name: ndp-ep-api-ingress
+        fieldPaths:
+          - spec.rules.[host=0].http.paths.[path=].path
+
 secretGenerator:
   - name: ndp-ep-env-secret
     options: 

@@ -29,7 +29,7 @@ Lightweight Kustomize overlays for deploying the National Data Platform Endpoint
   ```
 
 ## Deploy
-Namespaces are managed per overlay (`ndp-ep-dev`, `ndp-ep-test`, `ndp-endpoint`).
+Namespaces are managed per overlay (`ndp-ep-dev`, `ndp-ep-test`, `ndp-ep`).
 
 ```bash
 kubectl apply -k kustomize/overlays/dev
