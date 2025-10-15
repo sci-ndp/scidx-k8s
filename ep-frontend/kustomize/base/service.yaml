@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ndp-ep-frontend-service
+  labels:
+    app: ndp-ep-frontend
+spec:
+  selector:
+    app: ndp-ep-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 80
+  type: ClusterIP

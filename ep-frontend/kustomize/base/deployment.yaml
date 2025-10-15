@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ndp-ep-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ndp-ep-frontend
+  template:
+    metadata:
+      labels:
+        app: ndp-ep-frontend
+    spec:
+      containers:
+      - name: ndp-ep-frontend
+        image: rbardaji/ndp-ep-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: api-addr-cm
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
