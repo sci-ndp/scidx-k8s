@@ -15,7 +15,7 @@ patches:
 
 images:
   - name: rbardaji/ndp-ep-api
-    newTag: 0.3.0-alpha.3
+    newTag: latest
 
 # define root path config map and use it to patch ingress path
 configMapGenerator:
