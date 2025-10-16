@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: ndp-ep-frontend-dev
+namespace: ndp-ep-frontend
 
 resources:
   - ../../base
@@ -15,13 +15,11 @@ patches:
 
 images:
   - name: rbardaji/ndp-ep-frontend
-    newTag: 1.3.0-alpha.2
+    newTag: latest
 
 # define config map for passing NDP-EP-API URL env variable to frontend container
 configMapGenerator:
   - name: api-addr-cm
     literals:
-      # - REACT_APP_API_BASE_URL=http://ndp-test-210.chpc.utah.edu/api/dev
-      # - NDP_EP_API=http://ndp-ep-api-service.ndp-ep-dev.svc.cluster.local:8003
-      - NDP_EP_API=http://ndp-test-210.chpc.utah.edu/api/dev
+      - NDP_EP_API=http://ndp-test-202.chpc.utah.edu/api/
       
