@@ -12,10 +12,14 @@ patches:
       kind: Ingress
       name: ndp-ep-api-ingress
     path: ingress-patch.yaml
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: ndp-ep-api
+    path: hpa-patch.yaml
 
 images:
   - name: rbardaji/ndp-ep-api
-    newTag: 0.3.0-alpha.3
+    newTag: latest
 
 # define root path config map and use it to patch ingress path
 configMapGenerator:
