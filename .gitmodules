@@ -2,7 +2,3 @@
 	path = ckan-helm
 	url = git@github.com:sci-ndp/ckan-helm.git
 	branch = master
-[submodule "jhub-helm"]
-	path = jhub-helm
-	url = git@github.com:sci-ndp/jhub-helm.git
-	branch = main
