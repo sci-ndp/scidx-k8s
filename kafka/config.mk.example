@@ -1,0 +1,17 @@
+# Overrides for Kafka/Strimzi targets.
+# Copy this file as-is and edit values to match your environment.
+# All values are consumed by the Make targets.
+
+# Strimzi operator settings
+RELEASE_NAME = strimzi                      # Helm release name for the operator
+NAMESPACE = kafka                           # Namespace for operator and cluster
+CHART_VERSION = 0.45.0                      # Strimzi chart version
+CHART = strimzi/strimzi-kafka-operator      # Chart reference
+HELM_REPO_NAME = strimzi                    # Helm repo name
+HELM_REPO_URL = https://strimzi.io/charts   # Helm repo URL
+
+# Kafka broker connection
+BROKER_HOST =                               # External hostname used for advertisedHost and kcat
+
+# Kubernetes context
+KUBE_CONTEXT =                              # kubectl/helm context to target (overrides current)

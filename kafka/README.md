@@ -1,104 +1,63 @@
-# Kafka Kubernetes Deployment Documentation
+# Kafka on Kubernetes (Strimzi)
 
-This guide provides instruction for deploying Strimzi Kafka with TCP Ingress, which walks through:
+Use this repo to deploy a 4-broker Strimzi Kafka cluster and expose it via NGINX TCP passthrough. Make targets handle the install, ingress wiring, and broker advertisedHost patching for you.
 
-1. Enabled TCP passthrough for Kafka via **NGINX Ingress Controller**
-2. Applied a 4-broker **Strimzi Kafka cluster**
-3. Verified the setup using `kcat` over NGINX
+## Prereqs
 
-## Prerequisites
+- `kubectl` and `helm` installed and able to reach your cluster.
+- `kcat` if you want to run the verification target.
 
-Ensure you have `kubectl` and `helm` installed and configured to interact with your Kubernetes cluster.
+## Configure defaults
 
-## Additional Resources
+Copy and edit the example once so all targets share the same settings:
 
-For more information on `kubectl` and `helm`, refer to the following resources:
+```bash
+cp config.mk.example config.mk
+# edit config.mk to set KUBE_CONTEXT, NAMESPACE, BROKER_HOST, etc.
+```
 
-- [kubectl Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-- [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
-- [Helm Installation Guide](https://helm.sh/docs/intro/install/)
-- [Helm Documentation](https://helm.sh/docs/intro/using_helm/)
+`KUBE_CONTEXT` defaults to your current kubectl context (or `microk8s` if none); override in `config.mk` as needed.
 
-## Installation
+Key settings in `config.mk`:
+- `KUBE_CONTEXT`: kube context to target (overrides current).
+- `NAMESPACE`: namespace for operator and Kafka cluster.
+- `BROKER_HOST`: external hostname used for advertisedHost and kcat verification.
+- `RELEASE_NAME`, `CHART`, `CHART_VERSION`, `HELM_REPO_NAME`, `HELM_REPO_URL`: Helm release/chart/repo details for the Strimzi operator.
 
-1. **Make Shell Scripts Executable**
+## Deploy
 
-    Run the following command to make all the shell scripts executable:
+```bash
+# Install/upgrade the Strimzi operator in the target namespace
+make operator-install
 
-    ```bash
-    chmod +x *.sh
-    ```
+# Patch advertisedHost in kafka-cluster.yaml with BROKER_HOST and apply the cluster
+make install
+```
 
-2. **Install the Strimzi Operator**
+## Expose via NGINX TCP
 
-    The Strimzi Helm workflow lives in [`./strimzi-operator/Makefile`](./strimzi-operator/Makefile). Run the following from the `strimzi-operator` directory to add the Helm repo (idempotent), create the namespace if needed, and install or upgrade the release:
+Choose one path:
 
-    ```bash
-    cd strimzi-operator
-    make install
-    ```
+- Helm-managed ingress-nginx:
+  ```bash
+  make tcp-passthrough-helm
+  ```
+- MicroK8s ingress addon:
+  ```bash
+  make tcp-passthrough-microk8s
+  ```
 
-    `make install` automatically performs `helm repo add`, `helm repo update`, and scopes the operator to the `kafka` namespace via `--set watchNamespaces={kafka}`. 
-    
-    `make status` inspect the release
-    
-    `make uninstall` to remove it when you're done experimenting.
-    
-3. **Upgrade NGINX Ingress Controller with TCP Support**
-    
-    **Helm-managed ingress:**
+## Verify
 
-    ```bash
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    helm repo update
+Fetch metadata from the broker endpoint:
 
-    helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
-        --namespace ingress-nginx --create-namespace \
-        --set controller.service.type=LoadBalancer \
-        --set tcp.31090="kafka/my-kafka-kafka-0:9094" \
-        --set tcp.31091="kafka/my-kafka-kafka-1:9094" \
-        --set tcp.31092="kafka/my-kafka-kafka-2:9094" \
-        --set tcp.31093="kafka/my-kafka-kafka-3:9094"
-    ```
+```bash
+make verify
+```
 
-    **MicroK8s ingress add-on:** If the ingress controller was installed with `microk8s enable ingress`, apply the TCP passthrough ConfigMap instead of relying on Helm values:
+## Cleanup
 
-    ```bash
-    ./tcp-passthrough.sh
-    ```
-
-    Each TCP rule maps an external port to a specific Kafka broker inside the cluster. NGINX listens on ports `31090–31093` and forwards them to Kafka pods on `9094`.
-
-4. **Deploy a Kafka Cluster**
-    
-    Update each `listeners.configuration.brokers.broker.advertisedHost` to nginx ingress controller's hostname/external-ip in [`kafka-cluster.yaml`](./kafka-cluster.yaml)
-
-    Run [`install.sh`](./install.sh) script to deploy the Kafka cluster by applying the [`kafka-cluster.yaml`](./kafka-cluster.yaml) configuration file to your Kubernetes cluster. This file is a Custom Resource (CR) used by the Strimzi Operator to define and manage the Kafka cluster.
-    ```bash
-    ./install.sh
-    ```
-
-5. **Verify the Kafka Cluster**
-
-    We confirmed external access to broker 3 using:
-
-    ```bash
-    kcat -b 192.168.1.100:31093 -L
-    ```
-
-    Output showed:
-
-    - Metadata retrieved from broker 3
-    - All brokers registered correctly
-    - Topics and partitions accessible
-    
-
-    `kcat` (formerly `kafkacat`) is a lightweight command-line tool for producing, consuming, and inspecting Kafka messages.
-    Refer to the [kcat documentation](https://github.com/edenhill/kcat).
-
-## Final Result
-
-- ✅ Strimzi Kafka with 4 brokers
-- ✅ NGINX Ingress with TCP passthrough to each broker
-- ✅ One broker (broker 3) correctly pinned to an internal MicroK8s node
-- ✅ Verified with `kcat` over public IP + custom port
+```bash
+make uninstall           # remove kafka-cluster.yaml resources
+make operator-uninstall  # remove Strimzi operator
+```

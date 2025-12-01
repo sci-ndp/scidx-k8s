@@ -15,16 +15,16 @@ spec:
         configuration:
           brokers:
             - broker: 0
-              advertisedHost: ndp-dev-202.chpc.utah.edu
+              advertisedHost: 
               nodePort: 31090
             - broker: 1
-              advertisedHost: ndp-dev-202.chpc.utah.edu
+              advertisedHost: 
               nodePort: 31091
             - broker: 2
-              advertisedHost: ndp-dev-202.chpc.utah.edu
+              advertisedHost: 
               nodePort: 31092
             - broker: 3
-              advertisedHost: ndp-dev-202.chpc.utah.edu
+              advertisedHost: 
               nodePort: 31093
     storage:
       type: ephemeral
