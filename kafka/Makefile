@@ -42,7 +42,7 @@ verify:
 
 # Update advertisedHost values in kafka-cluster.yaml
 patch-advertised-host:
-	@test -n "$(BROKER_HOST)" || (echo "BROKER_HOST is required (set via config.mk or env)"; exit 1)
+	@test -n "$(BROKER_HOST)" || (echo "BROKER_HOST is required (set via config.mk)"; exit 1)
 	python3 patch_advertised_host.py --file kafka-cluster.yaml --host "$(BROKER_HOST)"
 
 

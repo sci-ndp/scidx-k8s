@@ -7,32 +7,33 @@ Use this repo to deploy a 4-broker Strimzi Kafka cluster and expose it via NGINX
 - `kubectl` and `helm` installed and able to reach your cluster.
 - `kcat` if you want to run the verification target.
 
-## Configure defaults
+## Installation
 
-Copy and edit the example once so all targets share the same settings:
+1. Copy and edit the example once so all targets share the same settings:
 
-```bash
-cp config.mk.example config.mk
-# edit config.mk to set KUBE_CONTEXT, NAMESPACE, BROKER_HOST, etc.
-```
+    ```bash
+    cp config.mk.example config.mk
+    ```
 
-`KUBE_CONTEXT` defaults to your current kubectl context (or `microk8s` if none); override in `config.mk` as needed.
+    >`KUBE_CONTEXT` defaults to your current kubectl context (or `microk8s` if none); override in `config.mk` as needed.
 
-Key settings in `config.mk`:
-- `KUBE_CONTEXT`: kube context to target (overrides current).
-- `NAMESPACE`: namespace for operator and Kafka cluster.
-- `BROKER_HOST`: external hostname used for advertisedHost and kcat verification.
-- `RELEASE_NAME`, `CHART`, `CHART_VERSION`, `HELM_REPO_NAME`, `HELM_REPO_URL`: Helm release/chart/repo details for the Strimzi operator.
+    Key settings in `config.mk`:
+    - `KUBE_CONTEXT`: kube context to target (overrides current).
+    - `BROKER_HOST`: external hostname used for advertisedHost and kcat verification.
+    
+    Others:
+    - `NAMESPACE`: namespace for operator and Kafka cluster.
+    - `RELEASE_NAME`, `CHART`, `CHART_VERSION`, `HELM_REPO_NAME`, `HELM_REPO_URL`: Helm release/chart/repo details for the Strimzi operator.
 
-## Deploy
+2. Install/upgrade the Strimzi operator in the target namespace:
+    ```bash
+    make install-operator
+    ```
 
-```bash
-# Install/upgrade the Strimzi operator in the target namespace
-make operator-install
-
-# Patch advertisedHost in kafka-cluster.yaml with BROKER_HOST and apply the cluster
-make install
-```
+3. Patch advertisedHost in kafka-cluster.yaml with BROKER_HOST and apply the cluster
+    ```bash
+    make install
+    ```
 
 ## Expose via NGINX TCP
 
@@ -59,5 +60,5 @@ make verify
 
 ```bash
 make uninstall           # remove kafka-cluster.yaml resources
-make operator-uninstall  # remove Strimzi operator
+make uninstall-operator  # remove Strimzi operator
 ```
