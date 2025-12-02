@@ -2,14 +2,14 @@
 
 Use this repo to deploy a 4-broker Strimzi Kafka cluster and expose it via NGINX TCP passthrough. Make targets handle the install, ingress wiring, and broker advertisedHost patching for you.
 
-## Prereqs
+## Prerequisites
 
 - `kubectl` and `helm` installed and able to reach your cluster.
 - `kcat` if you want to run the verification target.
 
-## Installation
+## **Installation**
 
-1. Copy and edit the example once so all targets share the same settings:
+1. #### **Copy default make config**, all make targets share the same settings
 
     ```bash
     cp config.mk.example config.mk
@@ -25,17 +25,17 @@ Use this repo to deploy a 4-broker Strimzi Kafka cluster and expose it via NGINX
     - `NAMESPACE`: namespace for operator and Kafka cluster.
     - `RELEASE_NAME`, `CHART`, `CHART_VERSION`, `HELM_REPO_NAME`, `HELM_REPO_URL`: Helm release/chart/repo details for the Strimzi operator.
 
-2. Install/upgrade the Strimzi operator in the target namespace:
+2. #### **Install/upgrade the Strimzi operator** in the target namespace
     ```bash
     make install-operator
     ```
 
-3. Patch advertisedHost in kafka-cluster.yaml with BROKER_HOST and apply the cluster
+3. #### **Deploy Kafka cluster:** patch advertisedHost in kafka-cluster.yaml with BROKER_HOST and apply it
     ```bash
     make install
     ```
 
-## Expose via NGINX TCP
+## **Expose** via NGINX TCP Passthrough
 
 Choose one path:
 
@@ -48,7 +48,7 @@ Choose one path:
   make tcp-passthrough-microk8s
   ```
 
-## Verify
+## **Verify**
 
 Fetch metadata from the broker endpoint:
 
