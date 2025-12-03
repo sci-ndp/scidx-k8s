@@ -18,9 +18,9 @@ Deployable configs for the SciDX services stack on Kubernetes: JupyterHub, CKAN,
 
 ## Clone this repo
 ```bash
-git clone --recurse-submodules https://github.com/national-data-platform/scidx-k8s-dev.git
+git clone --recurse-submodules https://github.com/sci-ndp/scidx-k8s.git
 
-cd scidx-k8s-dev
+cd scidx-k8s
 ```
 >If you already cloned without submodules
 ```git submodule update --init --recursive```
