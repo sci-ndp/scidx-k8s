@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ndp-ep-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ndp-ep-api
+  template:
+    metadata:
+      labels:
+        app: ndp-ep-api
+    spec:
+      containers:
+      - name: ndp-ep-api
+        image: rbardaji/ndp-ep-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: ndp-ep-env-secret
+        - configMapRef:
+            name: root-path-cm
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"

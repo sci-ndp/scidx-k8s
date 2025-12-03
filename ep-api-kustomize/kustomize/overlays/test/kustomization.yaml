@@ -1,0 +1,53 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ndp-ep-test
+
+resources:
+  - ../../base
+  - namespace.yaml
+
+patches:
+  - target:
+      kind: Ingress
+      name: ndp-ep-api-ingress
+    path: ingress-patch.yaml
+  - target:
+      kind: HorizontalPodAutoscaler
+      name: ndp-ep-api
+    path: hpa-patch.yaml
+  - path: kubeconfig-patch.yaml
+
+images:
+  - name: rbardaji/ndp-ep-api
+    newName: yutianqin/ndpep
+    newTag: v1
+
+# define root path config map and use it to patch ingress path
+configMapGenerator:
+  - name: root-path-cm
+    literals:
+      - ROOT_PATH=/api/test
+replacements:
+  - source:
+      kind: ConfigMap
+      name: root-path-cm
+      fieldPath: data.ROOT_PATH
+    targets:
+      - select:
+          kind: Ingress
+          name: ndp-ep-api-ingress
+        fieldPaths:
+          - spec.rules.[host=ndp-test-211.chpc.utah.edu].http.paths.[path=/].path
+
+secretGenerator:
+  - name: ndp-ep-env-secret
+    options: 
+      disableNameSuffixHash: true
+    envs:
+      - ndp-ep-env-secret.env
+  - name: ndp-ep-kubeconfig
+    options:
+      disableNameSuffixHash: true
+    files:
+      - config=./kubeconfig/config-202
