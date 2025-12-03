@@ -48,7 +48,7 @@ cd scidx-k8s
    ```bash
    cd ckan-helm
    ```
-   and follow [**CKAN Deployment Document**](./ckan-helm/README.md); by following, what you will do:
+   and follow [**CKAN Deployment Document**](https://github.com/sci-ndp/ckan-helm/blob/master/README.md); by following, what you will do:
    ```bash
    cp config.example.mk config.mk
    # edit config.mk to set KUBE_CONTEXT
@@ -61,7 +61,7 @@ cd scidx-k8s
    ```bash
    cd ndp-jupyterhub/helm-generic
    ```
-   and follow [**generic NDP JupyterHub Deployment Document**](./ndp-jupyterhub/helm-generic/README.md); by following, what you will do:
+   and follow [**generic NDP JupyterHub Deployment Document**](https://github.com/national-data-platform/ndp-jupyterhub/blob/central-var/helm-generic/README.md); by following, what you will do:
    ```bash
    # prepare secrets/values per ndp-jupyterhub/README.md
    # common flow: helm repo add/update, set proxy secret, create jupyterhub-secret, then:
