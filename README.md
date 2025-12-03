@@ -60,6 +60,9 @@ cd scidx-k8s
 4) #### Deploy JupyterHub:
    ```bash
    cd ndp-jupyterhub/helm-generic
+   # temp switch to central-var branch, will merge into main later
+   git fetch origin
+   git switch central-var
    ```
    and follow [**generic NDP JupyterHub Deployment Document**](https://github.com/national-data-platform/ndp-jupyterhub/blob/central-var/helm-generic/README.md); by following, what you will do:
    ```bash
