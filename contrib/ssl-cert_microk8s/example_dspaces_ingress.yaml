@@ -1,0 +1,29 @@
+# The Ingress is configured to use the nginx IngressClass 
+# and to request a TLS certificate from the letsencrypt-prod ClusterIssuer
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dspaces-api-ingress
+  namespace: dspaces
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - vdc-190.chpc.utah.edu
+      secretName: dspaces-tls
+  rules:
+    - host: vdc-190.chpc.utah.edu
+      http:
+        paths:
+          - path: /dspaces(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: dspaces-api-service
+                port:
+                  number: 8001

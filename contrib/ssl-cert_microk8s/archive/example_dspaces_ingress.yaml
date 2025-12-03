@@ -1,0 +1,29 @@
+# Example Ingress for dspaces 
+# This Ingress works for the precondition that a secret called dspaces-tls-secret exists in the dspaces namespace.
+# The secret should contain a valid TLS certificate and key for the domain vdc-190.chpc.utah.edu.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dspaces-api-ingress
+  namespace: dspaces
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - vdc-190.chpc.utah.edu
+      secretName: dspaces-tls-secret
+  rules:
+    - host: vdc-190.chpc.utah.edu
+      http:
+        paths:
+          - path: /dspaces(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: dspaces-api-service
+                port:
+                  number: 8001
