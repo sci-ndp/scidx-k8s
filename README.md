@@ -63,8 +63,8 @@ cd scidx-k8s
    ```
    and follow [**generic NDP JupyterHub Deployment Document**](https://github.com/national-data-platform/ndp-jupyterhub/blob/central-var/helm-generic/README.md); by following, what you will do:
    ```bash
-   # prepare secrets/values per ndp-jupyterhub/README.md
-   # common flow: helm repo add/update, set proxy secret, create jupyterhub-secret, then:
+   # consult ndp admin for secrets values per ndp-jupyterhub/README.md
+   # common flow: helm repo add/update, set secret for auth client, create jupyterhub-secret, site-values.yaml override, then:
    make deploy
    ```
 5) #### Deploy NDP Endpoint API:
@@ -73,6 +73,7 @@ cd scidx-k8s
    ```
    and follow [**NDP Endpoint API Deployment Document**](./ep-api-kustomize/README.md); by following, what you will do:
     ```bash
+   cd <overlay(prod|dev|test)>
    cp ndp-ep-env-secret.env.template ndp-ep-env-secret.env
    # edit ndp-ep-env-secret.env to fill in secrets
    kubectl apply -k kustomize/overlays/prod   # or dev/test
@@ -83,5 +84,7 @@ cd scidx-k8s
    ```
    and follow [**NDP Endpoint Admin Console Deployment Document**](./ep-frontend-kustomize/README.md); by following, what you will do:
    ```bash
+   cd <overlay(prod|dev|test)>
+   # edit NDP_EP_API_URL to point to deployed NDP Endpoint API
    kubectl apply -k kustomize/overlays/prod   # or dev/test
    ```
