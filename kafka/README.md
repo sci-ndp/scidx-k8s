@@ -62,3 +62,6 @@ make verify
 make uninstall           # remove kafka-cluster.yaml resources
 make uninstall-operator  # remove Strimzi operator
 ```
+
+## Next Steps
+Go back to [**SciDx Kubernetes Document**](https://github.com/sci-ndp/scidx-k8s?tab=readme-ov-file#deploy-kafka-strimzi) for more details about the overall Kubernetes setup for SciDx service.

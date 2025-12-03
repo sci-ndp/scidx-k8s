@@ -37,3 +37,6 @@ Remove everything defined in an overlay:
 ```bash
 kubectl delete -k kustomize/overlays/<env>
 ```
+
+## Next Steps
+Go back to [**SciDx Kubernetes Document**](https://github.com/sci-ndp/scidx-k8s?tab=readme-ov-file#deploy-ndp-endpoint-admin-console) for more details about the overall Kubernetes setup for SciDx service.
