@@ -17,13 +17,13 @@ patches:
       name: ndp-ep-frontend
     path: deployment-patch.yaml
     
-# images:
-#   - name: rbardaji/ndp-ep-frontend
-#     newTag: latest
+images:
+  - name: rbardaji/ndp-ep-frontend
+    newTag: latest
 
 # define config map for passing NDP-EP-API URL env variable to frontend container
 configMapGenerator:
   - name: api-addr-cm
     literals:
-      - NDP_EP_API=http://ndp-test-202.chpc.utah.edu/api/
+      - NDP_EP_API=https://ndp-dev-202.chpc.utah.edu/api
       
