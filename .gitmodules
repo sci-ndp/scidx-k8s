@@ -5,3 +5,4 @@
 [submodule "ndp-jupyterhub"]
 	path = ndp-jupyterhub
 	url = https://github.com/national-data-platform/ndp-jupyterhub.git
+	branch = central-var
