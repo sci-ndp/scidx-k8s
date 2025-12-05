@@ -36,56 +36,64 @@ cd scidx-k8s
    ```bash
    cd kafka
    ```
-   and follow [**Kafka Deployment Document**](./kafka/README.md); by following, what you will do:
-   ```bash
+   and follow [**Kafka Deployment Document**](./kafka/README.md).
+   <!-- ```bash
    cp config.mk.example config.mk   
    # And edit config.mk to set BROKER_HOST and KUBE_CONTEXT
    make install-operator
    make install
    # Optional: make tcp-passthrough-helm   # expose via ingress-nginx
    # Optional: make verify
-   ```
+   ``` -->
 3) #### Deploy CKAN:
    ```bash
+   cd ..  # go back to repo root
    cd ckan-helm
    ```
-   and follow [**CKAN Deployment Document**](https://github.com/sci-ndp/ckan-helm/blob/master/README.md); by following, what you will do:
-   ```bash
+   and follow [**CKAN Deployment Document**](https://github.com/sci-ndp/ckan-helm/blob/master/README.md).
+   <!-- by following, what you will do: -->
+   <!-- ```bash
    cp config.example.mk config.mk
    # edit config.mk to set KUBE_CONTEXT
    cp site-values.example.yaml site-values.yaml   
    # edit site-values.yaml to setsite URL, ingress host, admin creds
    make update
    make deploy
-   ```
+   ``` -->
 4) #### Deploy JupyterHub:
    ```bash
+   cd ..  # go back to repo root
    cd ndp-jupyterhub/helm-generic
    ```
-   and follow [**generic NDP JupyterHub Deployment Document**](https://github.com/national-data-platform/ndp-jupyterhub/blob/central-var/helm-generic/README.md); by following, what you will do:
-   ```bash
+   and follow [**generic NDP JupyterHub Deployment Document**](https://github.com/national-data-platform/ndp-jupyterhub/blob/central-var/helm-generic/README.md).
+   <!-- by following, what you will do: -->
+   <!-- ```bash
    # consult ndp admin for secrets values per ndp-jupyterhub/README.md
    # common flow: helm repo add/update, set secret for auth client, create jupyterhub-secret, site-values.yaml override, then:
    make deploy
-   ```
+   ``` -->
 5) #### Deploy NDP Endpoint API:
    ```bash
+   cd ../..  # go back to repo root
    cd ep-api-kustomize
    ```
-   and follow [**NDP Endpoint API Deployment Document**](./ep-api-kustomize/README.md); by following, what you will do:
-    ```bash
+   and follow [**NDP Endpoint API Deployment Document**](./ep-api-kustomize/README.md).
+   <!-- by following, what you will do: -->
+   <!-- ```bash
    cd <overlay(prod|dev|test)>
    cp ndp-ep-env-secret.env.template ndp-ep-env-secret.env
    # edit ndp-ep-env-secret.env to fill in secrets
    kubectl apply -k .  # from overlay dir
-   ```
+   ``` -->
 6) #### Deploy NDP Endpoint Admin Console:
    ```bash
+   cd ..  # go back to repo root
    cd ep-frontend-kustomize
    ```
-   and follow [**NDP Endpoint Admin Console Deployment Document**](./ep-frontend-kustomize/README.md); by following, what you will do:
-   ```bash
+   and follow [**NDP Endpoint Admin Console Deployment Document**](./ep-frontend-kustomize/README.md).
+   <!-- by following, what you will do: -->
+   <!-- ```bash
    cd <overlay(prod|dev|test)>
    # edit NDP_EP_API_URL to point to deployed NDP Endpoint API
    kubectl apply -k .  # from overlay dir
-   ```
+   ``` -->
