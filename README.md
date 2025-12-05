@@ -76,7 +76,7 @@ cd scidx-k8s
    cd <overlay(prod|dev|test)>
    cp ndp-ep-env-secret.env.template ndp-ep-env-secret.env
    # edit ndp-ep-env-secret.env to fill in secrets
-   kubectl apply -k kustomize/overlays/prod   # or dev/test
+   kubectl apply -k .  # from overlay dir
    ```
 6) #### Deploy NDP Endpoint Admin Console:
    ```bash
@@ -86,5 +86,5 @@ cd scidx-k8s
    ```bash
    cd <overlay(prod|dev|test)>
    # edit NDP_EP_API_URL to point to deployed NDP Endpoint API
-   kubectl apply -k kustomize/overlays/prod   # or dev/test
+   kubectl apply -k .  # from overlay dir
    ```
