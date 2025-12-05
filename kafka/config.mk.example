@@ -3,6 +3,7 @@
 # All values are consumed by the Make targets.
 
 # Strimzi operator settings
+# ------------------------------
 # Namespace for operator and cluster
 NAMESPACE = kafka
 # Helm release name for the operator
@@ -16,10 +17,14 @@ HELM_REPO_NAME = strimzi
 # Helm repo URL
 HELM_REPO_URL = https://strimzi.io/charts
 
+
 # Kafka broker connection
+# ------------------------------
 # External hostname used for advertisedHost and kcat
 BROKER_HOST =
 
+
 # Kubernetes context
+# ------------------------------
 # kubectl/helm context to target (overrides current)
 KUBE_CONTEXT =

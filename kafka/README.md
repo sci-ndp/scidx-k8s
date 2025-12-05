@@ -15,15 +15,14 @@ Use this repo to deploy a 4-broker Strimzi Kafka cluster and expose it via NGINX
     cp config.mk.example config.mk
     ```
 
-    >`KUBE_CONTEXT` defaults to your current kubectl context (or `microk8s` if none); override in `config.mk` as needed.
+    Then open ./config.mk and set values<br>
+    ```bash
+    vi config.mk
+    ```
+    Key one: **`BROKER_HOST`** (required): external DNS.
 
-    Key settings in `config.mk`:
-    - `KUBE_CONTEXT`: kube context to target (overrides current).
-    - `BROKER_HOST`: external hostname used for advertisedHost and kcat verification.
+    [Other settings in `config.mk`](#configmk-settings) can be changed as needed.
     
-    Others:
-    - `NAMESPACE`: namespace for operator and Kafka cluster.
-    - `RELEASE_NAME`, `CHART`, `CHART_VERSION`, `HELM_REPO_NAME`, `HELM_REPO_URL`: Helm release/chart/repo details for the Strimzi operator.
 
 2. #### **Install/upgrade the Strimzi operator** in the target namespace
     ```bash
@@ -48,20 +47,61 @@ Choose one path:
   make tcp-passthrough-microk8s
   ```
 
-## **Verify**
+## **Optional follow-up**: verify and cleanup
 
-Fetch metadata from the broker endpoint:
-
+Verify broker endpoint metadata (uses `kcat`):
+> Requires `kcat` installed;<br>
+> Wait until deployment for brokers is ready. Check kafka cluster status, run `kubectl get pods -n ckan -w`.
 ```bash
 make verify
 ```
 
-## Cleanup
+Cleanup:<br>
+`make uninstall` removes the deployed Kafka cluster resources.<br>
+`make uninstall-operator` removes the Strimzi operator release.
 
-```bash
-make uninstall           # remove kafka-cluster.yaml resources
-make uninstall-operator  # remove Strimzi operator
-```
 
 ## Next Steps
 Go back to [**SciDx Kubernetes Document**](https://github.com/sci-ndp/scidx-k8s?tab=readme-ov-file#deploy-kafka-strimzi) for more details about the overall Kubernetes setup for SciDx service.
+
+<br>
+
+## config.mk Settings
+`BROKER_HOST`(required): external DNS name that clients use to reach Kafka brokers, installation will fail without it.
+
+`KUBE_CONTEXT`: kubernetes cluster context (defaults to **kubectl config current-context** if leaves empty, or **"microk8s"** if none).
+
+`NAMESPACE`: namespace to deploy operator and Kafka cluster into (default: **kafka**).
+
+`RELEASE_NAME`, `CHART`, `CHART_VERSION`, `HELM_REPO_NAME`, `HELM_REPO_URL`: Helm release/chart/repo details for the Strimzi operator with default values.
+
+Example:
+```mk
+# Strimzi operator settings
+# ------------------------------
+# Namespace for operator and cluster
+NAMESPACE = kafka
+# Helm release name for the operator
+RELEASE_NAME = strimzi
+# Strimzi chart version
+CHART_VERSION = 0.45.0
+# Chart reference
+STRIMZI_CHART = strimzi/strimzi-kafka-operator
+# Helm repo name
+HELM_REPO_NAME = strimzi
+# Helm repo URL
+HELM_REPO_URL = https://strimzi.io/charts
+
+
+# Kafka broker connection
+# ------------------------------
+# External hostname used for advertisedHost and kcat
+BROKER_HOST = ndp-dev-202.chpc.utah.edu
+
+
+# Kubernetes context
+# ------------------------------
+# kubectl/helm context to target (overrides current)
+KUBE_CONTEXT = microk8s
+```
+[Back to `Installation`](#copy-default-make-config-all-make-targets-share-the-same-settings)
