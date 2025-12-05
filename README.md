@@ -17,6 +17,7 @@ Deployable configs for the SciDX services stack on Kubernetes: JupyterHub, CKAN,
 - Git with SSH access to GitHub if you use the `git@` submodule URLs; switch `.gitmodules` to HTTPS if needed.
 
 ## Clone this repo
+> Submodule Caveat: `ndp-jupyterhub` is currently a private repo. Make sure you can access `https://github.com/national-data-platform/ndp-jupyterhub.git` (branch `central-var`) or the submodule checkout will fail during clone, consult NDP admin if you need access.
 ```bash
 git clone --recurse-submodules https://github.com/sci-ndp/scidx-k8s.git
 
