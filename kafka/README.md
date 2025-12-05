@@ -102,6 +102,6 @@ BROKER_HOST = ndp-dev-202.chpc.utah.edu
 # Kubernetes context
 # ------------------------------
 # kubectl/helm context to target (overrides current)
-KUBE_CONTEXT = microk8s
+KUBE_CONTEXT = arn:aws:eks:us-west-2:xxxxxxxxxxxx:cluster/cluster-name
 ```
 [Back to `Installation`](#copy-default-make-config-all-make-targets-share-the-same-settings)
