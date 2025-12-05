@@ -12,10 +12,10 @@ patches:
       kind: Ingress
       name: ndp-ep-frontend-ingress
     path: ingress-patch.yaml
-  - target:
-      kind: Deployment
-      name: ndp-ep-frontend
-    path: deployment-patch.yaml
+  # - target:
+  #     kind: Deployment
+  #     name: ndp-ep-frontend
+  #   path: deployment-patch.yaml
     
 images:
   - name: rbardaji/ndp-ep-frontend
