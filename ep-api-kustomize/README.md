@@ -127,7 +127,7 @@ MONGODB_DATABASE=ndp_local_catalog
 # ==============================================
 # Enable or disable the Pre-CKAN instance (True/False)
 # Set to True if you want to submit datasets to NDP Central Catalog
-PRE_CKAN_ENABLED=True
+PRE_CKAN_ENABLED=False
 
 # URL of the Pre-CKAN staging instance (Required if PRE_CKAN_ENABLED=True)
 # This is typically provided by the NDP team
@@ -142,7 +142,7 @@ PRE_CKAN_API_KEY=
 # ==============================================
 # Enable or disable Kafka connectivity (True/False)
 # Set to True if you want to ingest data from Kafka streams
-KAFKA_CONNECTION=False
+KAFKA_CONNECTION=True
 
 # Kafka broker hostname or IP address (Required if KAFKA_CONNECTION=True)
 KAFKA_HOST=
