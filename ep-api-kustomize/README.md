@@ -34,15 +34,11 @@ Lightweight Kustomize overlays for deploying the National Data Platform Endpoint
   ```
 
 ## Deploy
-Namespaces are managed per overlay (`ndp-ep-dev`, `ndp-ep-test`, `ndp-ep`).
 
+> Namespaces are managed per overlay (`ndp-ep-dev`, `ndp-ep-test`, `ndp-ep`). Kustomize creates the namespace (if needed), builds the secret from your `ndp-ep-env-secret.env`, and applies the shared resources.
 ```bash
-kubectl apply -k kustomize/overlays/dev
-kubectl apply -k kustomize/overlays/test
-kubectl apply -k kustomize/overlays/prod
+kubectl apply -k .
 ```
-
-Kustomize creates the namespace (if needed), builds the secret from your `.env`, and applies the shared resources.
 
 ## Cleanup
 Remove everything defined in an overlay:
