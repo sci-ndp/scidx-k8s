@@ -24,7 +24,7 @@ BROKER_HOST ?= kafka-broker.example.com
 BROKER_PORT ?= 31090
 BROKER ?= $(BROKER_HOST):$(BROKER_PORT)
 
-.PHONY: install verify uninstall tcp-passthrough-helm tcp-passthrough-microk8s namespace repo repo-update install-operator uninstall-operator search status patch-advertised-host
+.PHONY: install verify uninstall tcp-passthrough-helm tcp-passthrough-microk8s namespace repo repo-update install-operator uninstall-operator search status-operator patch-advertised-host
 
 
 # Cluster install/uninstall (assumes operator already running)
@@ -87,7 +87,8 @@ install-operator: repo-update namespace
 	$(HELM) $(HELM_CTX) upgrade --install $(RELEASE_NAME) $(CHART) \
 	  --version $(CHART_VERSION) \
 	  --namespace $(NAMESPACE) \
-	  --set watchNamespaces={$(NAMESPACE)}
+	  --set watchAllNamespaces=true \
+	  --wait
 
 uninstall-operator:
 	$(HELM) $(HELM_CTX) uninstall $(RELEASE_NAME) -n $(NAMESPACE)
@@ -95,5 +96,5 @@ uninstall-operator:
 search:
 	$(HELM) search repo $(CHART) --versions
 
-status:
+status-operator:
 	$(HELM) $(HELM_CTX) status $(RELEASE_NAME) -n $(NAMESPACE)

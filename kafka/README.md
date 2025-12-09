@@ -67,7 +67,7 @@ Go back to [**SciDx Kubernetes Document**](https://github.com/sci-ndp/scidx-k8s?
 <br>
 
 ## config.mk Settings
-`BROKER_HOST`(required): external DNS name that clients use to reach Kafka brokers, installation will fail without it.
+**`BROKER_HOST`(required)**: external DNS name that clients use to reach Kafka brokers, installation will fail without it.
 
 `KUBE_CONTEXT`: kubernetes cluster context (defaults to **kubectl config current-context** if leaves empty, or **"microk8s"** if none).
 
@@ -75,7 +75,7 @@ Go back to [**SciDx Kubernetes Document**](https://github.com/sci-ndp/scidx-k8s?
 
 `RELEASE_NAME`, `CHART`, `CHART_VERSION`, `HELM_REPO_NAME`, `HELM_REPO_URL`: Helm release/chart/repo details for the Strimzi operator with default values.
 
-Example:
+Example, replace every <...>:
 ```mk
 # Strimzi operator settings
 # ------------------------------
@@ -96,12 +96,12 @@ HELM_REPO_URL = https://strimzi.io/charts
 # Kafka broker connection
 # ------------------------------
 # External hostname used for advertisedHost and kcat
-BROKER_HOST = ndp-dev-202.chpc.utah.edu
+BROKER_HOST = <kafka.example.com>
 
 
 # Kubernetes context
 # ------------------------------
 # kubectl/helm context to target (overrides current)
-KUBE_CONTEXT = arn:aws:eks:us-west-2:xxxxxxxxxxxx:cluster/cluster-name
+KUBE_CONTEXT = <arn:aws:eks:us-west-2:xxxxxxxxxxxx:cluster/cluster-name>
 ```
 [Back to `Installation`](#copy-default-make-config-all-make-targets-share-the-same-settings)
