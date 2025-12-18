@@ -98,3 +98,16 @@ cd scidx-k8s
    # edit NDP_EP_API_URL to point to deployed NDP Endpoint API
    kubectl apply -k .  # from overlay dir
    ``` -->
+
+## Deployed services (what you should have running)
+| Service | Default namespace | Access | What to expect | Quick check |
+| --- | --- | --- | --- | --- |
+| Kafka (Strimzi) | `kafka` | Service + TCP passthrough | Strimzi operator + Kafka broker pods | `kubectl get pods,svc -n kafka` |
+| CKAN | `ckan` | Ingress (`/ckan`) | Web UI, API, and worker pods | `kubectl get pods,svc,ingress -n ckan` |
+| NDP Generic JupyterHub | `ndp-jhub` | Ingress (`/jupyter/`) | Hub pods + proxy | `kubectl get pods,svc,ingress -n ndp-jhub` |
+| NDP Endpoint API | `ndp-ep`, `ndp-ep-dev`, `ndp-ep-test` | Ingress(`/api` for prod) | API deployment + service + ingress | `kubectl get pods,svc,ingress -n <overlay-namespace>` |
+| NDP Endpoint Admin Console | `ep-frontend`, `ep-frontend-dev`, `ndp-ep-console-test` | Ingress | Frontend deployment + service + ingress | `kubectl get pods,svc,ingress -n <overlay-namespace>` |
+
+Note: defaults are from each component's Helm/kustomize config; update the namespaces if you changed them.
+
+Optional helpers under `contrib/` are not part of the core stack and used when needed.
