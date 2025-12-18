@@ -15,13 +15,23 @@ Lightweight Kustomize overlays for deploying the National Data Platform Endpoint
    ```bash
    cd kustomize/overlays/prod   # or kustomize/overlays/(dev|test)
    ```
-2. Set the public hostname in `ingress-patch.yaml` (replace `value: ndp-dev-202.chpc.utah.edu` with your ingress controller's DNS name).
-   > Note: Default ingress path is `/api`, so your ndp endpoint api will be served at `your-hostname/api`. To use a different root, edit `ROOT_PATH` in `kustomization.yaml` (`configMapGenerator`). The replacement there updates the ingress path.
-3. Copy the secret template and populate it:
+
+2. Update the ingress settings for your cluster in `ingress-patch.yaml`:
+   ```bash
+   vi ingress-patch.yaml
+   ```
+   See [Ingress Patch Details](#ingress-patch-details).
+
+3. Copy the secret template to create your local secret file:
    ```bash
    cp ndp-ep-env-secret.env.template ndp-ep-env-secret.env
    ```
-4. Fill out the needed fields in `ndp-ep-env-secret.env`. The file stays local (ignored by Git) and is converted into a Kubernetes secret at deploy time. For details and examples, see the section below: [Secret Example](#secret-example).
+
+4. Then open `./ndp-ep-env-secret.env` and set values
+   ```bash
+   vi ndp-ep-env-secret.env
+   ```
+   Fill out the needed fields;<br>For details and examples, see [Secret Example](#secret-example).
 
 ## Dry Run (optional)
 - Render manifests locally:
@@ -35,7 +45,8 @@ Lightweight Kustomize overlays for deploying the National Data Platform Endpoint
 
 ## Deploy
 
-> Namespaces are managed per overlay (`ndp-ep-dev`, `ndp-ep-test`, `ndp-ep`). Kustomize creates the namespace (if needed), builds the secret from your `ndp-ep-env-secret.env`, and applies the shared resources.
+> Note:<br>Namespaces are managed per overlay (`ndp-ep-dev`, `ndp-ep-test`, `ndp-ep`).<br><br>
+What this does:<br>Kustomize creates the namespace (if needed), builds the secret from your `ndp-ep-env-secret.env`, and applies the shared resources.
 ```bash
 kubectl apply -k .
 ```
@@ -52,9 +63,32 @@ Go back to [**SciDx Kubernetes Document**](https://github.com/sci-ndp/scidx-k8s?
 
 <br>
 
+## Ingress Patch Details
+
+`spec.ingressClassName`: set this to your cluster's ingress class (default: **public**).
+
+`spec.rules[0].host`: set this to your public DNS name for the ingress controller.
+
+> Note: <br>Default ingress path is `/api`, so your NDP endpoint API is served at `your-hostname/api`. To use a different root, edit `ROOT_PATH` in **overlays/(env)/kustomization.yaml (`configMapGenerator`)**. The replacement there updates the ingress path.
+
+Example:
+```yaml
+- op: replace
+  path: /spec/ingressClassName
+  value: nginx # your ingress class name
+- op: replace
+  path: /spec/rules/0/host
+  value: api.example.org # your public DNS name
+```
+[Back to `Configure Overlay (Ingress + Secrets)`](#configure-overlay-ingress--secrets)
+
+<br>
+
 ## Secret Example
 
 Prepare environment variables for NDP Endpoint API configuration:
+
+> The file stays local (ignored by Git) and is converted into a Kubernetes secret at deploy time.
 
 ```bash
 # API CONFIGURATION
@@ -236,4 +270,4 @@ PRE_CKAN_URL=https://preckan.nationaldataplatform.org
 PRE_CKAN_API_KEY=your-ndp-preckan-api-key
 ```
 
-back to [Configure Overlay (Ingress + Secrets)](#configure-overlay-ingress--secrets)
+[Back to `Configure Overlay (Ingress + Secrets)`](#configure-overlay-ingress--secrets)
