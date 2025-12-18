@@ -32,11 +32,11 @@ replacements:
           kind: Ingress
           name: ndp-ep-api-ingress
         fieldPaths:
-          - spec.rules.[host=0].http.paths.[path=].path
+          - spec.rules.[host=].http.paths.[path=/].path
 
 secretGenerator:
   - name: ndp-ep-env-secret
-    options: 
+    options:
       disableNameSuffixHash: true
     envs:
       - ndp-ep-env-secret.env
