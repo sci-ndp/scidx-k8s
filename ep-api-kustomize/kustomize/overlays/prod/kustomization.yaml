@@ -15,6 +15,7 @@ patches:
 
 images:
   - name: rbardaji/ndp-ep-api
+    newName: yutianqin/ndp-ep-api
     newTag: latest
 
 # define root path config map and use it to patch ingress path
