@@ -52,7 +52,7 @@ cd scidx-k8s
    cd ..  # go back to repo root
    cd ndp-jupyterhub/helm-generic
    ```
-   and follow [**generic NDP JupyterHub Deployment Document**](https://github.com/national-data-platform/ndp-jupyterhub/blob/central-var/helm-generic/README.md).
+   and follow [**generic NDP JupyterHub Deployment Document**](https://github.com/national-data-platform/ndp-jupyterhub/blob/main/helm-generic/README.md).
 
 5) #### Deploy NDP Endpoint API:
    ```bash
