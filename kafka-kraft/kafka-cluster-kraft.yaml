@@ -47,16 +47,16 @@ spec:
           # TODO: add logic to assign different advertisedHost per broker
           brokers:
             - broker: 0
-              advertisedHost: 
+              advertisedHost: 10.244.2.202
               nodePort: 31090
             - broker: 1
-              advertisedHost: 
+              advertisedHost: 10.244.2.202
               nodePort: 31091
             - broker: 2
-              advertisedHost: 
+              advertisedHost: 10.244.2.202
               nodePort: 31092
             - broker: 3
-              advertisedHost: 
+              advertisedHost: 10.244.2.202
               nodePort: 31093
     config:
       offsets.topic.replication.factor: 3
